@@ -1,10 +1,10 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import AdminDashboard from './admin/pages/Dashboard';
-import ProductManagement from './admin/pages/ProductManagement';
-import OrderManagement from './admin/pages/OrderManagement';
-import UserHome from './user/pages/Home';
-import ProductList from './user/pages/ProductList';
+import AdminDashboard from './pages/Admin/Dashboard';
+import ProductManagement from './pages/Admin/ProductManagement';
+import OrderManagement from './pages/Admin/OrderManagement';
+import UserHome from './pages/User/Home';
+import ProductList from './pages/User/ProductList';
 import './App.css';
 
 const App = () => {
