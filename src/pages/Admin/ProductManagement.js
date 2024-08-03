@@ -1,6 +1,6 @@
 import React from 'react';
-import AdminNavbar from '../components/AdminNavbar';
-import Sidebar from '../components/Sidebar';
+import AdminNavbar from '../../components/Navbar/AdminNavbar';
+import Sidebar from '../../components/Navbar/Sidebar';
 //import './ProductManagement.css';
 
 const ProductManagement = () => {
