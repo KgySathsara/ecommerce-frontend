@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+
 import { Menu, Avatar, Badge, Space, Dropdown } from 'antd';
 import { CaretDownFilled, UserOutlined, ShoppingCartOutlined, PoweroffOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
@@ -71,62 +72,68 @@ const settings = [
 const Navbar = () => {
   const [current, setCurrent] = useState('1');
   
+=======
+import { Menu } from 'antd';
+import { useNavigate } from 'react-router-dom';
+
+const items = [
+  {
+    label: 'HOME',
+    key: '/',
+  },
+  {
+    label: 'ABOUT PRISCO',
+    key: '/about',
+  },
+  {
+    label: 'PRISCO GROUP',
+    key: 'prisco-group',
+    children: [
+      {
+        label: 'Prisco Animal Feeds',
+        key: '/priscoanimalfeeds',
+      },
+      {
+        label: 'Prisco Chicken',
+        key: '/PriscoChiken',
+      },
+      {
+        label: 'Prisco Breeders',
+        key: '/Priscobreeders',
+      },
+      {
+        label: 'Prisco Plantations',
+        key: '/PriscoPlantation',
+      },
+    ],
+  },
+  {
+    label: 'PRODUCTS',
+    key: '/products',
+  },
+  {
+    label: 'GALLERY',
+    key: '/gallery',
+  },
+  {
+    label: 'CONTACT US',
+    key: '/contact',
+  },
+];
+
+const Navbar = () => {
+  const [current, setCurrent] = useState('/');
+  const navigate = useNavigate();
+
+
   const onClick = (e) => {
     console.log('click ', e);
     setCurrent(e.key);
+    navigate(e.key);
   };
 
-  const renderMenuItem = (item) => {
-    if (item.children) {
-      return (
-        <Menu.SubMenu
-          key={item.key}
-          title={
-            <>
-              {item.label}
-              {item.dropdown && <CaretDownFilled style={{ marginLeft: 8 }} />}
-            </>
-          }
-        >
-          {item.children.map((child) => renderMenuItem(child))}
-        </Menu.SubMenu>
-      );
-    }
-    return <Menu.Item key={item.key}>{item.label}</Menu.Item>;
-  };
+  return <Menu onClick={onClick} selectedKeys={[current]} mode="horizontal" items={items} />;
 
-  const renderSettingsMenu = (
-    <Menu className="usermenu">
-      {settings.map(setting => (
-        <Menu.Item key={setting.key} icon={setting.icon}>
-          {setting.label}
-        </Menu.Item>
-      ))}
-    </Menu>
-  );
-
-  return (
-    <div className="navbar-container">
-      <img src={logo} alt="logo" className="navbar-logo" />
-      <Menu
-        onClick={onClick}
-        selectedKeys={[current]}
-        mode="horizontal"
-        className="navbar-menu"
-      >
-        {items.map((item) => renderMenuItem(item))}
-      </Menu>
-      <div className="navbar-right">
-        <Space size={24}>
-          <Dropdown overlay={renderSettingsMenu} trigger={['click']}>
-            <Badge>
-              <Avatar shape="circle" icon={<UserOutlined />} />
-            </Badge>
-          </Dropdown>
-        </Space>
-      </div>
-    </div>
-  );
 };
 
 export default Navbar;

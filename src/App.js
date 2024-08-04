@@ -11,6 +11,10 @@ import Contactus from './pages/User/Contactus';
 import Gallery from './pages/Admin/Gallery';
 import Message from './pages/Admin/Message';
 import Setting from './pages/Admin/Setting';
+import PriscoAnimalFeeds from './pages/User/InsidePage/priscoAnimal/PriscoAnimalFeeds';
+import PriscoChiken from './pages/User/InsidePage/PriscoChiken/PriscoChiken';
+import PriscoBree from './pages/User/InsidePage/PriscoBree/PriscoBree';
+import PriscoPlantation from './pages/User/InsidePage/PriscoPlantation/PriscoPlantation';
 import './App.css';
 
 const App = () => {
@@ -28,6 +32,11 @@ const App = () => {
         <Route path="/admin/gallery" element={<Gallery />} />
         <Route path="/admin/message" element={<Message />} />
         <Route path="/admin/setting" element={<Setting />} />
+
+        <Route path="/PriscoAnimalFeeds" element={<PriscoAnimalFeeds />} />
+        <Route path="/PriscoChiken" element={<PriscoChiken />} />
+        <Route path="/Priscobreeders" element={<PriscoBree />} />
+        <Route path="/PriscoPlantation" element={<PriscoPlantation />} />
       </Routes>
     </Router>
   );
