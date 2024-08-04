@@ -1,55 +1,132 @@
 import React, { useState } from 'react';
-import { Menu } from 'antd';
+import { Menu, Avatar, Badge, Space, Dropdown } from 'antd';
+import { CaretDownFilled, UserOutlined, ShoppingCartOutlined, PoweroffOutlined } from '@ant-design/icons';
+import { Link } from 'react-router-dom';
+import logo from '../../assets/logo.png'; 
+import './Navbar.css';
+
 const items = [
   {
-    label: 'HOME',
+    label: <Link to="/">HOME</Link>,
     key: '1',
   },
   {
-    label: 'ABOUT PRISCO',
+    label: <Link to="/UserAboutPrisco">ABOUT PRISCO</Link>,
     key: '2',
   },
   {
     label: 'PRISCO GROUP',
     key: '3',
+    dropdown: true,
     children: [
       {
-        label: 'Prisco Animal Feeds',
+        label: <Link to="/prisco-animal-feeds">Prisco Animal Feeds</Link>,
         key: '7',
       },
       {
-        label: 'Prisco Chicken',
+        label: <Link to="/prisco-chicken">Prisco Chicken</Link>,
         key: '8',
       },
       {
-        label: 'Prisco Breeders',
+        label: <Link to="/prisco-breeders">Prisco Breeders</Link>,
         key: '9',
       },
       {
-        label: 'Prisco Plantations',
+        label: <Link to="/prisco-plantations">Prisco Plantations</Link>,
         key: '10',
       },
     ],
   },
   {
-    label: 'PRODUCTS',
+    label: <Link to="/UserProduct">PRODUCTS</Link>,
     key: '4',
   },
   {
-    label: 'GALLERY',
+    label: <Link to="/UserGallery">GALLERY</Link>,
     key: '5',
   },
   {
-    label: 'CONTACT US',
+    label: <Link to="/Contactus">CONTACT US</Link>,
     key: '6',
   },
 ];
+
+const settings = [
+  {
+    label: 'Cart',
+    key: 'cart',
+    icon: <ShoppingCartOutlined />,
+  },
+  {
+    label: 'Account Settings',
+    key: 'account',
+  },
+  {
+    label: 'Logout',
+    key: 'logout',
+    icon: <PoweroffOutlined />,
+  },
+];
+
 const Navbar = () => {
-  const [current, setCurrent] = useState('mail');
+  const [current, setCurrent] = useState('1');
+  
   const onClick = (e) => {
     console.log('click ', e);
     setCurrent(e.key);
   };
-  return <Menu onClick={onClick} selectedKeys={[current]} mode="horizontal" items={items} />;
+
+  const renderMenuItem = (item) => {
+    if (item.children) {
+      return (
+        <Menu.SubMenu
+          key={item.key}
+          title={
+            <>
+              {item.label}
+              {item.dropdown && <CaretDownFilled style={{ marginLeft: 8 }} />}
+            </>
+          }
+        >
+          {item.children.map((child) => renderMenuItem(child))}
+        </Menu.SubMenu>
+      );
+    }
+    return <Menu.Item key={item.key}>{item.label}</Menu.Item>;
+  };
+
+  const renderSettingsMenu = (
+    <Menu className="usermenu">
+      {settings.map(setting => (
+        <Menu.Item key={setting.key} icon={setting.icon}>
+          {setting.label}
+        </Menu.Item>
+      ))}
+    </Menu>
+  );
+
+  return (
+    <div className="navbar-container">
+      <img src={logo} alt="logo" className="navbar-logo" />
+      <Menu
+        onClick={onClick}
+        selectedKeys={[current]}
+        mode="horizontal"
+        className="navbar-menu"
+      >
+        {items.map((item) => renderMenuItem(item))}
+      </Menu>
+      <div className="navbar-right">
+        <Space size={24}>
+          <Dropdown overlay={renderSettingsMenu} trigger={['click']}>
+            <Badge>
+              <Avatar shape="circle" icon={<UserOutlined />} />
+            </Badge>
+          </Dropdown>
+        </Space>
+      </div>
+    </div>
+  );
 };
+
 export default Navbar;
