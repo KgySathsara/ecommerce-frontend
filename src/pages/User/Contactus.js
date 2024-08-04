@@ -1,5 +1,6 @@
 import React from 'react';
 import Navbar from '../../components/Navbar/Navbar';
+import CustomFooter from '../../components/Footer/CustomFooter'
 import contactus from '../../assets/bg1.png';
 import './user.css';
 
@@ -16,6 +17,7 @@ const Contactus = () => {
           </div>
         </div>
       </div>
+      <CustomFooter />
     </section>
   );
 };
