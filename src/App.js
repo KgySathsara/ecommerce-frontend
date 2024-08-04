@@ -1,6 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Dashboard from './pages/Admin/Dashboard';
+import Login from './pages/Auth/Login';
+import Registration from './pages/Auth/Registration';
+import Dashboard from './pages/Auth/Registration';
 import ProductManagement from './pages/Admin/ProductManagement';
 import OrderManagement from './pages/Admin/OrderManagement';
 import UserHome from './pages/User/Home';
@@ -17,6 +19,9 @@ const App = () => {
   return (
     <Router>
       <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Registration />} />
+
         <Route path="/" element={<UserHome />} />
         <Route path="/admin" element={<Dashboard />} />
         <Route path="/admin/products" element={<ProductManagement />} />
