@@ -1,5 +1,6 @@
 import React from 'react';
 import Navbar from '../../components/Navbar/Navbar';
+import CustomFooter from '../../components/Footer/CustomFooter'
 import contactus from '../../assets/bg1.png';
 import { Card, Divider, Button, Form, Input, InputNumber } from 'antd';
 import { PhoneFilled, MailFilled } from '@ant-design/icons';
@@ -121,6 +122,7 @@ const Contactus = () => {
           </Form.Item>
         </Form>
       </div>
+      <CustomFooter />
     </section>
   );
 };

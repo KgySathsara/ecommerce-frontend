@@ -1,5 +1,6 @@
 import React from 'react';
 import Navbar from '../../../../components/Navbar/Navbar';
+//import CustomFooter from '../../../../components/Footer/CustomFooter';
 import './PriscoAnimalFeeds.css'; // Import the CSS file
 //import Image from '../../../../assest/Animal-Feed.jpg'; // Uncomment and correct the path
 
