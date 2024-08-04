@@ -2,11 +2,11 @@ import React from 'react';
 import { Layout } from 'antd';
 import Sidebar from '../../components/Navbar/Sidebar'; // Ensure this component is styled properly
 import './OrderManagement.css'; // Optional, if you have additional custom styles
-import OrderManagementBox from '../../pages/Admin/OrderManagementBox';
+import GalleryBox from '../../pages/Admin/GalleryBox';
 
 const { Header, Sider, Content } = Layout;
 
-const OrderManagement = () => {
+const Gallery = () => {
   return (
     <Layout className="order-management">
       <Sider width={256} className="sidebar">
@@ -15,15 +15,15 @@ const OrderManagement = () => {
       <Layout>
         <Header className="header">
           <div className="header-content">
-            <h2>Order Management</h2>
+            <h2>Gallery</h2>
           </div>
         </Header>
         <Content className="management-content">
-          <OrderManagementBox />
+            <GalleryBox />
         </Content>
       </Layout>
     </Layout>
   );
 };
 
-export default OrderManagement;
+export default Gallery;
