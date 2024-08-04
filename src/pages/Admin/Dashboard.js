@@ -2,7 +2,7 @@ import React from 'react';
 import { Layout, Dropdown, Menu, Avatar, Button } from 'antd';
 import { UserOutlined, LogoutOutlined } from '@ant-design/icons';
 import Sidebar from '../../components/Navbar/Sidebar';
-import logo from '../../assest/a.jpg';
+import logo from '../../assets/a.jpg';
 import DashboardBox from '../../pages/Admin/DashboardBox';
 import './Dashboard.css'; // Ensure you have the CSS file for custom styling
 
