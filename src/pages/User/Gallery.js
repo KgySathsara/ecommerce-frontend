@@ -1,5 +1,6 @@
 import React from 'react';
 import Navbar from '../../components/Navbar/Navbar';
+import CustomFooter from '../../components/Footer/CustomFooter'
 import contactus from '../../assets/bg1.png';
 import gallery1 from '../../assets/gallery1.jpg';
 import gallery2 from '../../assets/gallery2.jpg'; 
@@ -44,6 +45,7 @@ const Gallery = () => {
           </Card>
         ))}
       </div>
+      <CustomFooter />
     </section>
   );
 };
