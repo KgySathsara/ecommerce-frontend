@@ -1,55 +1,63 @@
 import React, { useState } from 'react';
 import { Menu } from 'antd';
+import { useNavigate } from 'react-router-dom';
+
 const items = [
   {
     label: 'HOME',
-    key: '1',
+    key: '/',
   },
   {
     label: 'ABOUT PRISCO',
-    key: '2',
+    key: '/about',
   },
   {
     label: 'PRISCO GROUP',
-    key: '3',
+    key: 'prisco-group',
     children: [
       {
         label: 'Prisco Animal Feeds',
-        key: '7',
+        key: '/priscoanimalfeeds',
       },
       {
         label: 'Prisco Chicken',
-        key: '8',
+        key: '/PriscoChiken',
       },
       {
         label: 'Prisco Breeders',
-        key: '9',
+        key: '/Priscobreeders',
       },
       {
         label: 'Prisco Plantations',
-        key: '10',
+        key: '/PriscoPlantation',
       },
     ],
   },
   {
     label: 'PRODUCTS',
-    key: '4',
+    key: '/products',
   },
   {
     label: 'GALLERY',
-    key: '5',
+    key: '/gallery',
   },
   {
     label: 'CONTACT US',
-    key: '6',
+    key: '/contact',
   },
 ];
+
 const Navbar = () => {
-  const [current, setCurrent] = useState('mail');
+  const [current, setCurrent] = useState('/');
+  const navigate = useNavigate();
+
   const onClick = (e) => {
     console.log('click ', e);
     setCurrent(e.key);
+    navigate(e.key);
   };
+
   return <Menu onClick={onClick} selectedKeys={[current]} mode="horizontal" items={items} />;
 };
+
 export default Navbar;

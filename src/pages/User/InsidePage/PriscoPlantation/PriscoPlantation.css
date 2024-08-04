@@ -1,0 +1,26 @@
+.PriscoPlantationHome{
+    background-image: url('../../../../assest/plant.jpg');
+    background-size: cover;
+    background-position: center;
+    min-height: 100vh;
+    color: white;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .content {
+    text-align: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+  }
+  
+  .content h1 {
+    font-size: 3em;
+  }
+  
+  .content p {
+    font-size: 1.5em;
+  }
+  
