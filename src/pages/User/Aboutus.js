@@ -11,28 +11,25 @@ const Aboutus = () => {
   return (
     <section>
       <Navbar />
-      <Card
-        hoverable
-        style={{
-          width: 500,
-        }}
-      >
-        <Row>
-          <Col flex="100px">
-            <img
-              alt="example"
-              src={ picture }
-              className="aboutus-image"
-            />
-          </Col>
-          <Col flex="auto" className="aboutus-details">
-            <Meta title="Prisco Chicken Product" description="Prisco chicken is high quality product that is..." paragraph="Read More.." />
-          </Col>
-        </Row>
-      </Card>
+      <div className="aboutus-card">
+        <Card hoverable>
+          <Row gutter={16}>
+            <Col span={8}>
+              <img alt="example" src={picture} className="aboutus-image" />
+            </Col>
+            <Col span={16} className="aboutus-details">
+              <Meta
+                title="Prisco Chicken Product"
+                description="Prisco chicken is a high-quality product that is..."
+              />
+              <p>Read More...</p>
+            </Col>
+          </Row>
+        </Card>
+      </div>
       <CustomFooter />
     </section>
   );
-}
+};
 
 export default Aboutus;

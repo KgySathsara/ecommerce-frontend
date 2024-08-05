@@ -53,16 +53,16 @@ const items = [
 
 const settings = [
   {
-    label: 'Cart',
+    label: <Link to="/Cart">Cart</Link>,
     key: 'cart',
     icon: <ShoppingCartOutlined />,
   },
   {
-    label: 'Account Settings',
+    label: <Link to="/AccountSetting">Account Settings</Link>,
     key: 'account',
   },
   {
-    label: 'Logout',
+    label: <Link to="/login">Logout</Link>,
     key: 'logout',
     icon: <PoweroffOutlined />,
   },

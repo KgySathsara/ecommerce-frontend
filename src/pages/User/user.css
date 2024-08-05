@@ -1,5 +1,3 @@
-/* user.css */
-
 .contactus-container {
   position: relative;
   text-align: center;
@@ -50,22 +48,63 @@
 
 .contactus-content {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: flex-start;
-  margin: 20px auto;
   padding: 20px;
+  gap: 50px;
 }
 
 .contactus-card {
-  margin-right: 20px;
-  width: 300px;
+  width: 800px;
+  height: 612px;
+  padding: 50px;
+  margin-left: 2rem;
+}
+
+.contactus-content .contactus-card p {
+  margin-bottom: 20px;
+  font-size: 20px;
+}
+
+.card-title {
+  font-size: 30px;
+  font-weight: 700;
 }
 
 .contactus-form {
-  max-width: 600px;
+  width: 800px;
   padding: 20px;
-  background-color: #f5f5f5;
   border-radius: 8px;
+}
+
+.contactus-form h1 {
+  margin-bottom: 20px;
+  font-size: 30px;
+}
+
+.contactus-form h3 {
+  margin-bottom: 20px;
+  font-size: 20px;
+  font-weight: normal;
+}
+
+.contactus-form h4 {
+  margin-top: -5px;
+  margin-left: 5px;
+  font-size: 13px;
+  font-weight: normal;
+}
+
+.contactus-form button {
+  margin-left: 20%;
+}
+
+.form-title {
+  font-size: 2rem;
+}
+
+.form-subtitle {
+  font-size: 1.5rem;
 }
 
 .ant-card p {
@@ -73,8 +112,8 @@
   font-size: 16px;
 }
 
-.anticon {
-  font-size: 20px;
+.contactus-card .anticon {
+  font-size: 40px;
   margin-right: 8px;
   vertical-align: middle;
 }
@@ -135,13 +174,53 @@
 }
 
 .aboutus-image {
-  width: 100px;
-  min-height: 15vh;
+  width: 400px;
+  margin-left: 40px;
+  margin-top: 40px;
 }
 
 .aboutus-details {
-  padding-left: 20px;
+  margin-left: -50px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+
+.account-setting-container {
+  margin-top: 100px;
+  max-width: 1500px;
+  margin: 40px auto;
+  padding: 20px;
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.account-setting-header {
+  text-align: center;
+  margin-bottom: 40px;
+  font-size: 35px;
+  font-weight: bold;
+}
+
+.account-setting-header h2 {
+  font-size: 24px;
+  align-items: flex-start;
+}
+
+.account-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.account-form-item .ant-form-item-label {
+  text-align: left;
+}
+
+.order-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  width: 600px;
 }

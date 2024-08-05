@@ -13,6 +13,8 @@ import Contactus from './pages/User/Contactus';
 import Gallery from './pages/Admin/Gallery';
 import Message from './pages/Admin/Message';
 import Setting from './pages/Admin/Setting';
+import AccountSetting from './pages/User/AccountSetting';
+import Cart from './pages/User/Cart';
 import PriscoAnimalFeeds from './pages/User/InsidePage/priscoAnimal/PriscoAnimalFeeds';
 import PriscoChiken from './pages/User/InsidePage/PriscoChiken/PriscoChiken';
 import PriscoBree from './pages/User/InsidePage/PriscoBree/PriscoBree';
@@ -31,6 +33,8 @@ const App = () => {
         <Route path="/UserProduct" element={<UserProduct />} />
         <Route path="/UserGallery" element={<UserGallery />} />
         <Route path="/Contactus" element={<Contactus />} />
+        <Route path="/AccountSetting" element={<AccountSetting />} />
+        <Route path="/Cart" element={<Cart />} />
         <Route path="/admin" element={<Dashboard />} />
         <Route path="/admin/products" element={<ProductManagement />} />
         <Route path="/admin/orders" element={<OrderManagement />} />
