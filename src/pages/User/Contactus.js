@@ -25,7 +25,7 @@ const Contactus = () => {
         </div>
       </div>
       <div className="contactus-content">
-        <Card title="Quick Contact" bordered={false} className="contactus-card">
+        <Card title={<span className="card-title">Quick Contact</span>} bordered={false} className="contactus-card">
           <p>Call us, Email us or Visit us!</p>
           <PhoneFilled />
           <p>+ 94 712 345 678</p>
@@ -40,8 +40,9 @@ const Contactus = () => {
           variant="filled"
           className="contactus-form"
         >
-          <h1>We Love To Hear From You</h1>
-          <h3>Send your quotation requests, inquiries, suggestions and etc.</h3>
+          <h1 className="form-title">We Love To Hear From You</h1>
+          <h3 className="form-subtitle">Send your quotation requests, inquiries, suggestions and etc.</h3>
+          <Divider />
           <Form.Item
             name="Name"
             rules={[
@@ -97,7 +98,6 @@ const Contactus = () => {
           </Form.Item>
 
           <Form.Item
-            label="Message"
             name="Message"
             rules={[
               {
@@ -106,7 +106,7 @@ const Contactus = () => {
               },
             ]}
           >
-            <br/><br />
+            <h4>Message:</h4>
             <Input.TextArea placeholder="Message*" />
           </Form.Item>
 
