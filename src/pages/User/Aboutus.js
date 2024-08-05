@@ -3,6 +3,7 @@ import Navbar from '../../components/Navbar/Navbar';
 import { Card, Row, Col } from 'antd';
 import './user.css';
 import picture from '../../assets/chicken.jpg';
+import CustomFooter from '../../components/Footer/CustomFooter';
 
 const { Meta } = Card;
 
@@ -29,6 +30,7 @@ const Aboutus = () => {
           </Col>
         </Row>
       </Card>
+      <CustomFooter />
     </section>
   );
 }
