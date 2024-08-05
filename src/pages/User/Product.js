@@ -18,7 +18,7 @@ const Product = () => {
         <img src={contactus} alt="Contactus" className="contactus-image" />
         <div className="contactus-overlay">
           <div className="contactus-text">
-            <h1>Product</h1>
+            <h1>PRODUCT</h1>
             <h3>View Our Gallery Our Image Album Will Help You To Get An Idea About Our Work</h3>
           </div>
         </div>

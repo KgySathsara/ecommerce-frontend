@@ -1,3 +1,5 @@
+/* user.css */
+
 .contactus-container {
   position: relative;
   text-align: center;
@@ -44,6 +46,41 @@
 
 .contactus-text h3 {
   font-size: 1.5rem;
+}
+
+.contactus-content {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  margin: 20px auto;
+  padding: 20px;
+}
+
+.contactus-card {
+  margin-right: 20px;
+  width: 300px;
+}
+
+.contactus-form {
+  max-width: 600px;
+  padding: 20px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+}
+
+.ant-card p {
+  margin: 10px 0;
+  font-size: 16px;
+}
+
+.anticon {
+  font-size: 20px;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+.contactus-card .ant-divider {
+  margin: 16px 0;
 }
 
 .all-product {
@@ -95,4 +132,16 @@
   border: none;
   cursor: pointer;
   border-radius: 15px;
+}
+
+.aboutus-image {
+  width: 100px;
+  min-height: 15vh;
+}
+
+.aboutus-details {
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
