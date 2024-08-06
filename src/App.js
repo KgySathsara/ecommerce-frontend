@@ -19,6 +19,7 @@ import PriscoAnimalFeeds from './pages/User/InsidePage/priscoAnimal/PriscoAnimal
 import PriscoChiken from './pages/User/InsidePage/PriscoChiken/PriscoChiken';
 import PriscoBree from './pages/User/InsidePage/PriscoBree/PriscoBree';
 import PriscoPlantation from './pages/User/InsidePage/PriscoPlantation/PriscoPlantation';
+import PrivateRoute from './components/PrivateRoute'; // Import PrivateRoute
 import './App.css';
 
 const App = () => {
@@ -27,7 +28,6 @@ const App = () => {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Registration />} />
-
         <Route path="/" element={<UserHome />} />
         <Route path="/UserAboutPrisco" element={<UserAboutPrisco />} />
         <Route path="/UserProduct" element={<UserProduct />} />
@@ -35,12 +35,14 @@ const App = () => {
         <Route path="/Contactus" element={<Contactus />} />
         <Route path="/AccountSetting" element={<AccountSetting />} />
         <Route path="/Cart" element={<Cart />} />
-        <Route path="/admin" element={<Dashboard />} />
-        <Route path="/admin/products" element={<ProductManagement />} />
-        <Route path="/admin/orders" element={<OrderManagement />} />
-        <Route path="/admin/gallery" element={<Gallery />} />
-        <Route path="/admin/message" element={<Message />} />
-        <Route path="/admin/setting" element={<Setting />} />
+        
+        {/* Admin Routes */}
+        <Route path="/admin" element={<PrivateRoute component={Dashboard} roles={['admin']} />} />
+        <Route path="/admin/products" element={<PrivateRoute component={ProductManagement} roles={['admin']} />} />
+        <Route path="/admin/orders" element={<PrivateRoute component={OrderManagement} roles={['admin']} />} />
+        <Route path="/admin/gallery" element={<PrivateRoute component={Gallery} roles={['admin']} />} />
+        <Route path="/admin/message" element={<PrivateRoute component={Message} roles={['admin']} />} />
+        <Route path="/admin/setting" element={<PrivateRoute component={Setting} roles={['admin']} />} />
 
         <Route path="/PriscoAnimalFeeds" element={<PriscoAnimalFeeds />} />
         <Route path="/PriscoChiken" element={<PriscoChiken />} />
@@ -52,4 +54,3 @@ const App = () => {
 };
 
 export default App;
-
