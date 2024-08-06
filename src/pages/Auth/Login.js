@@ -1,20 +1,50 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
-import { Form, Input, Button, Checkbox, Typography } from 'antd';
+import { Form, Input, Button, Checkbox, Typography, message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
-//import Navbar from '../../components/Navbar/Navbar';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import './Login.css';
 
 const { Title } = Typography;
 
 const Login = () => {
-  const onFinish = (values) => {
-    console.log('Received values of form: ', values);
+  const navigate = useNavigate();
+
+  const onFinish = async (values) => {
+    try {
+      const response = await axios.post('http://localhost:8000/api/login', {
+        email: values.username,
+        password: values.password,
+      });
+
+      if (response.status === 200) {
+        message.success('Login successful!');
+        const { user, role } = response.data;
+
+        // Store user data in localStorage
+        localStorage.setItem('user', JSON.stringify({ ...user, role }));
+
+        // Handle successful login and redirect based on role
+        if (role === 'admin') {
+          navigate('/admin');
+        } else {
+          navigate('/');
+        }
+      }
+    } catch (error) {
+      if (error.response) {
+        // Server responded with a status other than 200 range
+        message.error(error.response.data.message || 'Login failed. Please try again.');
+      } else {
+        // Something else happened while setting up the request
+        message.error('An error occurred. Please try again.');
+      }
+    }
   };
 
   return (
     <div className="login-page">
-
       <div className="login-container">
         <div className="login-header">
           <Title level={2}>Welcome To Login Page</Title>
@@ -57,7 +87,7 @@ const Login = () => {
               Log in
             </Button>
             <div className="login-register">
-              If you don't have an Account ? <a href="/register">register now!</a>
+              If you don't have an Account? <a href="/register">Register now!</a>
             </div>
           </Form.Item>
         </Form>
