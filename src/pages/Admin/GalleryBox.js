@@ -5,10 +5,7 @@ import './GalleryBox.css'; // Optional: add your own styles if needed
 
 const GalleryBox = () => {
   const [images, setImages] = useState([
-    "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
-    "https://via.placeholder.com/200",
-    "https://via.placeholder.com/200/0000FF/808080?text=Image3",
-    "https://via.placeholder.com/200/FF0000/FFFFFF?text=Image4"
+    "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
   ]);
 
   const [editingImageIndex, setEditingImageIndex] = useState(null);

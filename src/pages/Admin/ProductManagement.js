@@ -28,12 +28,14 @@ const ProductManagement = () => {
   const handleAddProduct = () => {
     setEditingProduct(null);
     form.resetFields();
+    setFileList([]);
     setIsModalOpen(true);
   };
 
   const handleEditProduct = (product) => {
     setEditingProduct(product);
     form.setFieldsValue(product);
+    setFileList([]);
     setIsModalOpen(true);
   };
 
@@ -52,17 +54,22 @@ const ProductManagement = () => {
   const handleOk = () => {
     form.validateFields()
       .then(values => {
+        if (fileList.length === 0) {
+          message.error('Please upload a product image.');
+          return;
+        }
+  
         const formData = new FormData();
         formData.append('name', values.name);
         formData.append('description', values.description);
         if (fileList.length > 0) {
-          formData.append('file', fileList[0].originFileObj);
+          formData.append('image', fileList[0].originFileObj); 
         }
-
+  
         const request = editingProduct
           ? axios.put(`http://localhost:8000/api/products/${editingProduct.id}`, formData)
           : axios.post('http://localhost:8000/api/products', formData);
-
+  
         request
           .then(response => {
             const updatedProduct = response.data.product;
@@ -82,10 +89,23 @@ const ProductManagement = () => {
         console.log('Validate Failed:', info);
       });
   };
+  
 
   const handleCancel = () => {
     setIsModalOpen(false);
     setFileList([]);
+  };
+
+  const beforeUpload = (file) => {
+    const isImage = file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/jpg' || file.type === 'image/gif' || file.type === 'image/svg+xml';
+    if (!isImage) {
+      message.error('You can only upload image files (JPEG, PNG, JPG, GIF, SVG)!');
+    }
+    const isLt2M = file.size / 1024 / 1024 < 2;
+    if (!isLt2M) {
+      message.error('Image must be smaller than 2MB!');
+    }
+    return isImage && isLt2M;
   };
 
   const columns = [
@@ -98,12 +118,6 @@ const ProductManagement = () => {
       title: 'Description',
       dataIndex: 'description',
       key: 'description',
-    },
-    {
-      title: 'Image',
-      dataIndex: 'image_path',
-      key: 'image_path',
-      render: (text) => <img src={text} alt="Product" style={{ width: 50, height: 50 }} />
     },
     {
       title: 'Actions',
@@ -178,8 +192,13 @@ const ProductManagement = () => {
                 }
                 return e?.fileList;
               }}
+              rules={[{ required: true, message: 'Please upload a product image!' }]}
             >
-              <Upload fileList={fileList} onChange={({ fileList }) => setFileList(fileList)}>
+              <Upload
+                fileList={fileList}
+                beforeUpload={beforeUpload}
+                onChange={({ fileList }) => setFileList(fileList)}
+              >
                 <Button icon={<UploadOutlined />}>Click to Upload</Button>
               </Upload>
             </Form.Item>
