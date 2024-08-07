@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { Layout, Form, Input, Button, Table, Modal, message, Row, Col, Card } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import React, { useState, useEffect } from 'react';
+import { Layout, Form, Input, Button, Table, Modal, message, Row, Col, Card, Upload } from 'antd';
+import { PlusOutlined, EditOutlined, DeleteOutlined, UploadOutlined } from '@ant-design/icons';
+import axios from 'axios';
 import Sidebar from '../../components/Navbar/Sidebar';
 import './ProductManagement.css';
 
@@ -10,41 +11,72 @@ const ProductManagement = () => {
   const [form] = Form.useForm();
   const [products, setProducts] = useState([]);
   const [editingProduct, setEditingProduct] = useState(null);
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [fileList, setFileList] = useState([]);
+
+  useEffect(() => {
+    axios.get('http://localhost:8000/api/products')
+      .then(response => {
+        setProducts(response.data.products);
+      })
+      .catch(error => {
+        console.error('There was an error fetching the products!', error);
+        message.error('There was an error fetching the products!');
+      });
+  }, []);
 
   const handleAddProduct = () => {
     setEditingProduct(null);
     form.resetFields();
-    setIsModalVisible(true);
+    setIsModalOpen(true);
   };
 
   const handleEditProduct = (product) => {
     setEditingProduct(product);
     form.setFieldsValue(product);
-    setIsModalVisible(true);
+    setIsModalOpen(true);
   };
 
   const handleDeleteProduct = (productId) => {
-    // Implement delete logic here
-    setProducts(products.filter(product => product.id !== productId));
-    message.success('Product deleted successfully');
+    axios.delete(`http://localhost:8000/api/products/${productId}`)
+      .then(() => {
+        setProducts(products.filter(product => product.id !== productId));
+        message.success('Product deleted successfully');
+      })
+      .catch(error => {
+        console.error('There was an error deleting the product!', error);
+        message.error('There was an error deleting the product!');
+      });
   };
 
   const handleOk = () => {
     form.validateFields()
       .then(values => {
-        if (editingProduct) {
-          // Edit existing product
-          setProducts(products.map(product =>
-            product.id === editingProduct.id ? { ...product, ...values } : product
-          ));
-          message.success('Product updated successfully');
-        } else {
-          // Add new product
-          setProducts([...products, { ...values, id: Date.now() }]);
-          message.success('Product added successfully');
+        const formData = new FormData();
+        formData.append('name', values.name);
+        formData.append('description', values.description);
+        if (fileList.length > 0) {
+          formData.append('file', fileList[0].originFileObj);
         }
-        setIsModalVisible(false);
+
+        const request = editingProduct
+          ? axios.put(`http://localhost:8000/api/products/${editingProduct.id}`, formData)
+          : axios.post('http://localhost:8000/api/products', formData);
+
+        request
+          .then(response => {
+            const updatedProduct = response.data.product;
+            setProducts(editingProduct
+              ? products.map(product => product.id === updatedProduct.id ? updatedProduct : product)
+              : [...products, updatedProduct]);
+            message.success(`Product ${editingProduct ? 'updated' : 'added'} successfully`);
+            setIsModalOpen(false);
+            setFileList([]);
+          })
+          .catch(error => {
+            console.error(`There was an error ${editingProduct ? 'updating' : 'adding'} the product!`, error);
+            message.error(`There was an error ${editingProduct ? 'updating' : 'adding'} the product!`);
+          });
       })
       .catch(info => {
         console.log('Validate Failed:', info);
@@ -52,7 +84,8 @@ const ProductManagement = () => {
   };
 
   const handleCancel = () => {
-    setIsModalVisible(false);
+    setIsModalOpen(false);
+    setFileList([]);
   };
 
   const columns = [
@@ -65,6 +98,12 @@ const ProductManagement = () => {
       title: 'Description',
       dataIndex: 'description',
       key: 'description',
+    },
+    {
+      title: 'Image',
+      dataIndex: 'image_path',
+      key: 'image_path',
+      render: (text) => <img src={text} alt="Product" style={{ width: 50, height: 50 }} />
     },
     {
       title: 'Actions',
@@ -101,36 +140,52 @@ const ProductManagement = () => {
             </Col>
           </Row>
         </Content>
-      </Layout>
 
-      <Modal
-        title={editingProduct ? 'Edit Product' : 'Add Product'}
-        visible={isModalVisible}
-        onOk={handleOk}
-        onCancel={handleCancel}
-      >
-        <Form
-          form={form}
-          layout="vertical"
-          initialValues={editingProduct}
+        <Modal
+          title={editingProduct ? 'Edit Product' : 'Add Product'}
+          open={isModalOpen}
+          onOk={handleOk}
+          onCancel={handleCancel}
         >
-          <Form.Item
-            label="Product Name"
-            name="name"
-            rules={[{ required: true, message: 'Please input the product name!' }]}
+          <Form
+            form={form}
+            layout="vertical"
+            initialValues={editingProduct}
           >
-            <Input placeholder="Enter product name" />
-          </Form.Item>
+            <Form.Item
+              label="Product Name"
+              name="name"
+              rules={[{ required: true, message: 'Please input the product name!' }]}
+            >
+              <Input placeholder="Enter product name" />
+            </Form.Item>
 
-          <Form.Item
-            label="Description"
-            name="description"
-            rules={[{ required: true, message: 'Please input the product description!' }]}
-          >
-            <Input.TextArea placeholder="Enter product description" />
-          </Form.Item>
-        </Form>
-      </Modal>
+            <Form.Item
+              label="Description"
+              name="description"
+              rules={[{ required: true, message: 'Please input the product description!' }]}
+            >
+              <Input.TextArea placeholder="Enter product description" />
+            </Form.Item>
+
+            <Form.Item
+              label="Upload Product Image"
+              name="upload"
+              valuePropName="fileList"
+              getValueFromEvent={e => {
+                if (Array.isArray(e)) {
+                  return e;
+                }
+                return e?.fileList;
+              }}
+            >
+              <Upload fileList={fileList} onChange={({ fileList }) => setFileList(fileList)}>
+                <Button icon={<UploadOutlined />}>Click to Upload</Button>
+              </Upload>
+            </Form.Item>
+          </Form>
+        </Modal>
+      </Layout>
     </Layout>
   );
 };
