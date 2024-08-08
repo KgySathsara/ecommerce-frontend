@@ -1,102 +1,113 @@
 import React, { useState } from 'react';
-import { Image, Row, Col, Button, Modal, Input, Upload, message } from 'antd';
-import { UploadOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
-import './GalleryBox.css'; // Optional: add your own styles if needed
+import { Layout, Image, Upload, Input, Button, message } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
+import axios from 'axios';
+import './OrderManagement.css';
+
+const { Content } = Layout;
+
+const getBase64 = (file) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
 
 const GalleryBox = () => {
-  const [images, setImages] = useState([
-    "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
-    "https://via.placeholder.com/200",
-    "https://via.placeholder.com/200/0000FF/808080?text=Image3",
-    "https://via.placeholder.com/200/FF0000/FFFFFF?text=Image4"
-  ]);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState('');
+  const [fileList, setFileList] = useState([]);
+  const [name, setName] = useState(''); 
 
-  const [editingImageIndex, setEditingImageIndex] = useState(null);
-  const [newImage, setNewImage] = useState(null);
-  const [editModalVisible, setEditModalVisible] = useState(false);
-  const [editImageUrl, setEditImageUrl] = useState("");
-
-  const handleDelete = (index) => {
-    setImages(images.filter((_, i) => i !== index));
+  const handlePreview = async (file) => {
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj);
+    }
+    setPreviewImage(file.url || file.preview);
+    setPreviewOpen(true);
   };
 
-  const handleEdit = (index) => {
-    setEditingImageIndex(index);
-    setEditImageUrl(images[index]);
-    setEditModalVisible(true);
+  const handleChange = ({ fileList: newFileList }) => setFileList(newFileList);
+
+  const handleInputChange = (e) => {
+    setName(e.target.value); 
   };
 
-  const handleAdd = () => {
-    if (newImage) {
-      setImages([...images, newImage]);
-      setNewImage(null);
-    } else {
-      message.error('Please upload an image');
+  const handleSubmit = async () => {
+    if (!name || !fileList.length) {
+      message.error('Please fill in the name and upload at least one image.');
+      return;
+    }
+
+    try {
+
+      const formData = new FormData();
+      formData.append('name', name);
+      fileList.forEach((file) => {
+        formData.append('images[]', file.originFileObj);
+      });
+
+      await axios.post('http://localhost:8000/api/gallery', formData);
+      message.success('Gallery data submitted successfully');
+    } catch (error) {
+      message.error('Failed to submit gallery data');
     }
   };
 
-  const handleSaveEdit = () => {
-    const updatedImages = [...images];
-    updatedImages[editingImageIndex] = editImageUrl;
-    setImages(updatedImages);
-    setEditModalVisible(false);
-  };
-
-  const handleImageChange = (info) => {
-    if (info.file.status === 'done') {
-      setNewImage(URL.createObjectURL(info.file.originFileObj));
-      message.success(`${info.file.name} file uploaded successfully`);
-    } else if (info.file.status === 'error') {
-      message.error(`${info.file.name} file upload failed.`);
-    }
-  };
+  const uploadButton = (
+    <button
+      style={{
+        border: 0,
+        background: 'none',
+      }}
+      type="button"
+    >
+      <PlusOutlined />
+      <div
+        style={{
+          marginTop: 8,
+        }}
+      >
+        Upload
+      </div>
+    </button>
+  );
 
   return (
-    <div className="gallery-box">
-      <Row gutter={16}>
-        {images.map((src, index) => (
-          <Col span={6} key={index} className="gallery-item">
+        <Content className="management-content">
+          <Upload
+            action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
+            listType="picture-card"
+            fileList={fileList}
+            onPreview={handlePreview}
+            onChange={handleChange}
+          >
+            {fileList.length >= 8 ? null : uploadButton}
+          </Upload>
+          {previewImage && (
             <Image
-              width={200}
-              src={src}
-              alt={`Gallery Image ${index + 1}`}
+              wrapperStyle={{
+                display: 'none',
+              }}
+              preview={{
+                visible: previewOpen,
+                onVisibleChange: (visible) => setPreviewOpen(visible),
+                afterOpenChange: (visible) => !visible && setPreviewImage(''),
+              }}
+              src={previewImage}
             />
-            <div className="gallery-actions">
-              <Button
-                icon={<EditOutlined />}
-                onClick={() => handleEdit(index)}
-              />
-              <Button
-                icon={<DeleteOutlined />}
-                onClick={() => handleDelete(index)}
-              />
-            </div>
-          </Col>
-        ))}
-      </Row>
-      <div className="gallery-add">
-        <Upload
-          showUploadList={false}
-          customRequest={handleImageChange}
-        >
-          <Button icon={<UploadOutlined />}>Upload New Photo</Button>
-        </Upload>
-        <Button type="primary" onClick={handleAdd}>
-          Add Photo
-        </Button>
-      </div>
-      <Modal
-        title="Edit Image"
-        visible={editModalVisible}
-        onOk={handleSaveEdit}
-        onCancel={() => setEditModalVisible(false)}
-      >
-        <Input
-          value={editImageUrl}
-          onChange={(e) => setEditImageUrl(e.target.value)}
-        />
-      </Modal>
-    </div>
+          )}
+          <Input
+            placeholder="Enter name"
+            value={name}
+            onChange={handleInputChange}
+            style={{ marginTop: 16 }}
+          />
+          <Button type="primary" onClick={handleSubmit} style={{ marginTop: 16 }}>
+            Submit
+          </Button>
+        </Content>
   );
 };
 

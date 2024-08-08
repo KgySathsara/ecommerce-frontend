@@ -28,12 +28,17 @@ const ProductManagement = () => {
   const handleAddProduct = () => {
     setEditingProduct(null);
     form.resetFields();
+    setFileList([]);
     setIsModalOpen(true);
   };
 
   const handleEditProduct = (product) => {
     setEditingProduct(product);
-    form.setFieldsValue(product);
+    form.setFieldsValue({
+      name: product.name,
+      description: product.description,
+    });
+    setFileList([]);
     setIsModalOpen(true);
   };
 
@@ -49,34 +54,74 @@ const ProductManagement = () => {
       });
   };
 
+  const handleSubmit = (values) => {
+    const formData = new FormData();
+    formData.append('name', values.name);
+    formData.append('description', values.description);
+
+    if (fileList.length > 0) {
+      const upload = fileList[0].originFileObj;
+
+      if (!upload.type.startsWith('image/')) {
+        message.error('Please upload only image files.');
+        return;
+      }
+
+      formData.append('upload', upload);
+    }
+
+    axios.post('http://localhost:8000/api/products', formData)
+      .then(response => {
+        const newProduct = response.data.product;
+        setProducts([...products, newProduct]);
+        message.success('Product added successfully');
+        setIsModalOpen(false);
+        setFileList([]);
+      })
+      .catch(error => {
+        console.error('There was an error adding the product!', error);
+        message.error('There was an error adding the product!');
+      });
+  };
+
+  const handleUpdate = (values) => {
+    const formData = new FormData();
+    formData.append('name', values.name);
+    formData.append('description', values.description);
+
+    if (fileList.length > 0) {
+      const upload = fileList[0].originFileObj;
+
+      if (!upload.type.startsWith('image/')) {
+        message.error('Please upload only image files.');
+        return;
+      }
+
+      formData.append('upload', upload);
+    }
+
+    axios.put(`http://localhost:8000/api/products/${editingProduct.id}`, formData)
+      .then(response => {
+        const updatedProduct = response.data.product;
+        setProducts(products.map(product => product.id === updatedProduct.id ? updatedProduct : product));
+        message.success('Product updated successfully');
+        setIsModalOpen(false);
+        setFileList([]);
+      })
+      .catch(error => {
+        console.error('There was an error updating the product!', error);
+        message.error('There was an error updating the product!');
+      });
+  };
+
   const handleOk = () => {
     form.validateFields()
       .then(values => {
-        const formData = new FormData();
-        formData.append('name', values.name);
-        formData.append('description', values.description);
-        if (fileList.length > 0) {
-          formData.append('file', fileList[0].originFileObj);
+        if (editingProduct) {
+          handleUpdate(values);
+        } else {
+          handleSubmit(values);
         }
-
-        const request = editingProduct
-          ? axios.put(`http://localhost:8000/api/products/${editingProduct.id}`, formData)
-          : axios.post('http://localhost:8000/api/products', formData);
-
-        request
-          .then(response => {
-            const updatedProduct = response.data.product;
-            setProducts(editingProduct
-              ? products.map(product => product.id === updatedProduct.id ? updatedProduct : product)
-              : [...products, updatedProduct]);
-            message.success(`Product ${editingProduct ? 'updated' : 'added'} successfully`);
-            setIsModalOpen(false);
-            setFileList([]);
-          })
-          .catch(error => {
-            console.error(`There was an error ${editingProduct ? 'updating' : 'adding'} the product!`, error);
-            message.error(`There was an error ${editingProduct ? 'updating' : 'adding'} the product!`);
-          });
       })
       .catch(info => {
         console.log('Validate Failed:', info);
@@ -86,6 +131,18 @@ const ProductManagement = () => {
   const handleCancel = () => {
     setIsModalOpen(false);
     setFileList([]);
+  };
+
+  const beforeUpload = (file) => {
+    const isImage = file.type.startsWith('image/');
+    if (!isImage) {
+      message.error('You can only upload image files (JPEG, PNG, JPG, GIF, SVG)!');
+    }
+    const isLt2M = file.size / 1024 / 1024 < 2;
+    if (!isLt2M) {
+      message.error('Image must be smaller than 2MB!');
+    }
+    return isImage && isLt2M;
   };
 
   const columns = [
@@ -98,12 +155,6 @@ const ProductManagement = () => {
       title: 'Description',
       dataIndex: 'description',
       key: 'description',
-    },
-    {
-      title: 'Image',
-      dataIndex: 'image_path',
-      key: 'image_path',
-      render: (text) => <img src={text} alt="Product" style={{ width: 50, height: 50 }} />
     },
     {
       title: 'Actions',
@@ -178,11 +229,17 @@ const ProductManagement = () => {
                 }
                 return e?.fileList;
               }}
+              rules={[{ required: true, message: 'Please upload a product image!' }]}
             >
-              <Upload fileList={fileList} onChange={({ fileList }) => setFileList(fileList)}>
+              <Upload
+                fileList={fileList}
+                beforeUpload={beforeUpload}
+                onChange={({ fileList }) => setFileList(fileList)}
+              >
                 <Button icon={<UploadOutlined />}>Click to Upload</Button>
               </Upload>
             </Form.Item>
+
           </Form>
         </Modal>
       </Layout>

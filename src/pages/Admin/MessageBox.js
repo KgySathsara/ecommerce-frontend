@@ -1,82 +1,65 @@
-import React, { useEffect, useState } from 'react';
-import { Avatar, Button, List, Skeleton } from 'antd';
-const count = 3;
-const fakeDataUrl = `https://randomuser.me/api/?results=${count}&inc=name,gender,email,nat,picture&noinfo`;
+import React, { useState, useEffect } from 'react';
+import { Card, Button, Popconfirm, message } from 'antd';
+import { DeleteOutlined } from '@ant-design/icons';
+import axios from 'axios';
 
 const MessageBox = () => {
-  const [initLoading, setInitLoading] = useState(true);
-  const [loading, setLoading] = useState(false);
-  const [data, setData] = useState([]);
-  const [list, setList] = useState([]);
+  const [messages, setMessages] = useState([]);
+
   useEffect(() => {
-    fetch(fakeDataUrl)
-      .then((res) => res.json())
-      .then((res) => {
-        setInitLoading(false);
-        setData(res.results);
-        setList(res.results);
+    axios.get('http://localhost:8000/api/contact-messages')
+      .then(response => {
+        setMessages(response.data);
+      })
+      .catch(error => {
+        console.error('There was an error fetching the messages:', error);
       });
   }, []);
-  const onLoadMore = () => {
-    setLoading(true);
-    setList(
-      data.concat(
-        [...new Array(count)].map(() => ({
-          loading: true,
-          name: {},
-          picture: {},
-        })),
-      ),
-    );
-    fetch(fakeDataUrl)
-      .then((res) => res.json())
-      .then((res) => {
-        const newData = data.concat(res.results);
-        setData(newData);
-        setList(newData);
-        setLoading(false);
-        // Resetting window's offsetTop so as to display react-virtualized demo underfloor.
-        // In real scene, you can using public method of react-virtualized:
-        // https://stackoverflow.com/questions/46700726/how-to-use-public-method-updateposition-of-react-virtualized
-        window.dispatchEvent(new Event('resize'));
+
+  const deleteMessage = (id) => {
+    axios.delete(`http://localhost:8000/api/contact-messages/${id}`)
+      .then(response => {
+        if (response.status === 200) {
+          message.success('Message deleted successfully!');
+          setMessages(messages.filter(message => message.id !== id));
+        } else {
+          message.error('Unexpected response from the server.');
+        }
+      })
+      .catch(error => {
+        console.error('There was an error deleting the message:', error);
+        message.error('There was an error deleting the message.');
       });
   };
-  const loadMore =
-    !initLoading && !loading ? (
-      <div
-        style={{
-          textAlign: 'center',
-          marginTop: 12,
-          height: 32,
-          lineHeight: '32px',
-        }}
-      >
-        <Button onClick={onLoadMore}>loading more</Button>
-      </div>
-    ) : null;
+
+
   return (
-    <List
-      className="demo-loadmore-list"
-      loading={initLoading}
-      itemLayout="horizontal"
-      loadMore={loadMore}
-      dataSource={list}
-      renderItem={(item) => (
-        <List.Item
-          // eslint-disable-next-line jsx-a11y/anchor-is-valid
-          actions={[<a key="list-loadmore-edit">edit</a>, <a key="list-loadmore-more">more</a>]}
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px' }}>
+      {messages.map((message) => (
+        <Card
+          key={message.id}
+          title={`Message from: ${message.name}`}
+          bordered={false}
+          style={{ width: 300 }}
+          extra={
+            <Popconfirm
+              title="Are you sure you want to delete this message?"
+              onConfirm={() => deleteMessage(message.id)}
+              okText="Yes"
+              cancelText="No"
+            >
+              <Button type="text" icon={<DeleteOutlined />} />
+            </Popconfirm>
+          }
         >
-          <Skeleton avatar title={false} loading={item.loading} active>
-            <List.Item.Meta
-              avatar={<Avatar src={item.picture.large} />}
-              title={<a href="https://ant.design">{item.name?.last}</a>}
-              description="Ant Design, a design language for background applications, is refined by Ant UED Team"
-            />
-            <div>content</div>
-          </Skeleton>
-        </List.Item>
-      )}
-    />
+          <p><strong>Email:</strong> {message.email}</p>
+          <p><strong>Phone:</strong> {message.phone}</p>
+          <p><strong>Subject:</strong> {message.subject}</p>
+          <p><strong>Message:</strong> {message.message}</p>
+        </Card>
+      ))}
+    </div>
   );
 };
+
 export default MessageBox;
