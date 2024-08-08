@@ -1,10 +1,10 @@
 import React from 'react';
 import Navbar from '../../components/Navbar/Navbar';
-import CustomFooter from '../../components/Footer/CustomFooter'
+import CustomFooter from '../../components/Footer/CustomFooter';
 import contactus from '../../assets/bg1.png';
-import { Card, Divider, Button, Form, Input, InputNumber } from 'antd';
+import { message, Form, Input, Button, Divider, Card } from 'antd';
 import { PhoneFilled, MailFilled } from '@ant-design/icons';
-import './user.css';
+import axios from 'axios';
 
 const formItemLayout = {
   labelCol: { xs: { span: 24 }, sm: { span: 6 } },
@@ -12,6 +12,22 @@ const formItemLayout = {
 };
 
 const Contactus = () => {
+  const [form] = Form.useForm(); // Create form instance
+
+  const onFinish = (values) => {
+    console.log('Form Values:', values);
+    axios.post('http://localhost:8000/api/contact-us', values)
+      .then(response => {
+        console.log('Message sent successfully:', response.data);
+        message.success('Your message has been sent successfully!');
+        form.resetFields(); // Reset form fields after successful submission
+      })
+      .catch(error => {
+        console.error('There was an error sending the message:', error);
+        message.error('There was an error sending your message. Please try again.');
+      });
+  };
+
   return (
     <section>
       <Navbar />
@@ -37,14 +53,15 @@ const Contactus = () => {
 
         <Form
           {...formItemLayout}
-          variant="filled"
+          form={form} // Connect form instance to the form component
+          onFinish={onFinish}
           className="contactus-form"
         >
           <h1 className="form-title">We Love To Hear From You</h1>
           <h3 className="form-subtitle">Send your quotation requests, inquiries, suggestions and etc.</h3>
           <Divider />
           <Form.Item
-            name="Name"
+            name="name"
             rules={[
               {
                 required: true,
@@ -56,7 +73,7 @@ const Contactus = () => {
           </Form.Item>
 
           <Form.Item
-            name="Email"
+            name="email"
             rules={[
               {
                 required: true,
@@ -69,7 +86,7 @@ const Contactus = () => {
           </Form.Item>
 
           <Form.Item
-            name="Phone"
+            name="phone"
             rules={[
               {
                 required: true,
@@ -77,36 +94,39 @@ const Contactus = () => {
               },
             ]}
           >
-            <InputNumber
-              style={{
-                width: '100%',
-              }}
-              placeholder="Phone*"
-            />
+            <Input placeholder="Phone*" />
           </Form.Item>
 
           <Form.Item
-            name="Subject"
+            name="subject"
             rules={[
               {
                 required: true,
                 message: 'Please input the subject!',
               },
+              {
+                max: 40,
+                message: 'Subject cannot be longer than 40 characters!',
+              }
             ]}
           >
             <Input placeholder="Subject*" />
           </Form.Item>
 
           <Form.Item
-            name="Message"
+            name="message"
             rules={[
               {
                 required: true,
                 message: 'Please input your message!',
+                whitespace: true,
               },
+              {
+                max: 40,
+                message: 'Message cannot be longer than 40 characters!',
+              }
             ]}
           >
-            <h4>Message:</h4>
             <Input.TextArea placeholder="Message*" />
           </Form.Item>
 
