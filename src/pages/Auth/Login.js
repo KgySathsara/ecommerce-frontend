@@ -14,7 +14,7 @@ const Login = () => {
   const onFinish = async (values) => {
     try {
       const response = await axios.post('http://localhost:8000/api/login', {
-        email: values.username,
+        email: values.email,
         password: values.password,
       });
 
@@ -57,10 +57,10 @@ const Login = () => {
           onFinish={onFinish}
         >
           <Form.Item
-            name="username"
-            rules={[{ required: true, message: 'Please input your Username!' }]}
+            name="email"
+            rules={[{ required: true, message: 'Please input your email!' }]}
           >
-            <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="Username" />
+            <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="Email" />
           </Form.Item>
           <Form.Item
             name="password"
