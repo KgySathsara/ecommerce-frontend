@@ -1,6 +1,7 @@
 import React from 'react';
-import { Layout, Dropdown, Menu, Avatar, Button } from 'antd';
+import { Layout, Dropdown, Menu, Avatar, Button, notification } from 'antd';
 import { UserOutlined, LogoutOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate for redirection
 import Sidebar from '../../components/Navbar/Sidebar';
 import logo from '../../assets/a.jpg';
 import DashboardBox from '../../pages/Admin/DashboardBox';
@@ -9,17 +10,32 @@ import './Dashboard.css'; // Ensure you have the CSS file for custom styling
 const { Header, Sider, Content } = Layout;
 
 const Dashboard = () => {
+  const navigate = useNavigate(); // Initialize useNavigate
+
   const handleMenuClick = (e) => {
     if (e.key === 'logout') {
-      // Handle logout logic here
-      console.log('Logout clicked');
+      // Clear user data from local storage
+      localStorage.removeItem('user');
+      
+      // Show notification alert
+      notification.info({
+        message: 'Admin Sign Out',
+        description: 'You have been successfully signed out.',
+        placement: 'topRight', // Position the notification
+        duration: 2, // Duration in seconds
+      });
+
+      // Redirect to login page after notification
+      setTimeout(() => {
+        navigate('/login');
+      }, 2000); // Delay redirection to allow notification to be seen
     }
   };
 
   const userMenu = (
     <Menu onClick={handleMenuClick}>
       <Menu.Item key="profile" icon={<UserOutlined />}>
-        Profile
+        Admin
       </Menu.Item>
       <Menu.Item key="logout" icon={<LogoutOutlined />}>
         Logout
@@ -35,7 +51,7 @@ const Dashboard = () => {
       <Layout>
         <Header className="header">
           <div className="header-content">
-            <h2>Dashboard</h2>
+            <h2>Admin Dashboard</h2>
             <Dropdown overlay={userMenu} trigger={['click']}>
               <Button 
                 type="text" 
