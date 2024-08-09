@@ -1,13 +1,31 @@
-.PriscoChikenHome{
-    background-image: url('../../../../assets/chicken.jpg');
-    background-size: cover;
-    background-position: center;
-    min-height: 100vh;
-    color: white;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
+.PriscoChikenHome {
+  position: relative; /* Ensures the overlay is positioned correctly */
+  background-image: url('../../../../assets/pris.jpg');
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+  color: white;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.PriscoChikenHome::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Adjust this to change the overlay's color and opacity */
+  z-index: 1; /* Ensures the overlay is above the background image */
+}
+
+.PriscoChikenHome > * {
+  position: relative;
+  z-index: 2; /* Ensures the content is above the overlay */
+}
+
   
   .content {
     text-align: center;
@@ -24,3 +42,10 @@
     font-size: 1.5em;
   }
   
+  .Chiken {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 1500px; /* Optional: ensures it takes up the full width if needed */
+    margin-top: 40px; /* Adds space above the AnimalFeed component to move it down */
+  }

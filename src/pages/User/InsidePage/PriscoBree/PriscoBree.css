@@ -23,4 +23,12 @@
   .content p {
     font-size: 1.5em;
   }
+
+  .Bree {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 1500px; /* Optional: ensures it takes up the full width if needed */
+    margin-top: 40px; /* Adds space above the AnimalFeed component to move it down */
+  }
   
