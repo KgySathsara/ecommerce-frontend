@@ -1,7 +1,7 @@
 import React from 'react';
 import Navbar from '../../components/Navbar/Navbar';
 import { Card, Row, Col } from 'antd';
-import './user.css';
+import './about.css';
 import picture from '../../assets/chicken.jpg';
 import CustomFooter from '../../components/Footer/CustomFooter';
 
@@ -17,10 +17,16 @@ const Aboutus = () => {
             <Col span={8}>
               <img alt="example" src={picture} className="aboutus-image" />
             </Col>
-            <Col span={16} className="aboutus-details">
+            <Col span={8}>
+              <img alt="example" src={picture} className="aboutus-image" />
+            </Col>
+            <Col span={8}>
+              <img alt="example" src={picture} className="aboutus-image" />
+            </Col>
+            <Col span={22} className="aboutus-details">
+              <h2 className="aboutus-title">Prisco Chicken Product</h2>
               <Meta
-                title="Prisco Chicken Product"
-                description="Prisco chicken is a high-quality product that is..."
+                description="Prisco chicken is a premium product known for its high quality and freshness. Our chicken is sourced from the best farms, ensuring that every bite is nutritious and delicious. Perfect for all your culinary needs."
               />
               <p>Read More...</p>
             </Col>
