@@ -36,7 +36,7 @@ const CustomFooter = () => {
         </Col>
       </Row>
       <div style={{ marginTop: '20px' }}>
-        ©2024 Design by Intella Reasearch Group. All Rights Reserved.
+        ©2024 Design by Intella Research Group. All Rights Reserved.
       </div>
     </Footer>
   );
