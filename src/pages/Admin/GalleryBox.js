@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Layout, Form, Input, Button, Table, Modal, message, Upload } from 'antd';
-import { PlusOutlined, UploadOutlined, DeleteOutlined } from '@ant-design/icons';
+import { PlusOutlined, UploadOutlined,EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import axios from 'axios';
-import { Buffer } from 'buffer';
 import './OrderManagement.css';
 
 const { Content } = Layout;
@@ -17,21 +16,28 @@ const GalleryBox = () => {
   useEffect(() => {
     axios.get('http://localhost:8000/api/gallery')
       .then(response => {
-        const imagesWithBase64 = response.data.images.map(image => ({
-          ...image,
-          image: image.image ? Buffer.from(image.image).toString('base64') : null,
-        }));
-        setImages(imagesWithBase64);
+        setImages(response.data.galleries);
       })
       .catch(error => {
-        console.error('There was an error fetching the images!', error);
-        message.error('There was an error fetching the images!');
+        console.error('There was an error fetching the galleries!', error);
+        message.error('There was an error fetching the galleries!');
       });
   }, []);
 
   const handleAddImage = () => {
     setEditingImage(null);
     form.resetFields();
+    setFileList([]);
+    setIsModalOpen(true);
+  };
+
+  const handleEditImage = (image) => {
+    setEditingImage(image);
+    form.setFieldsValue({
+      name: image.name,
+      price: image.price,
+      quantity: image.quantity,
+    });
     setFileList([]);
     setIsModalOpen(true);
   };
@@ -53,31 +59,48 @@ const GalleryBox = () => {
     formData.append('name', values.name);
     formData.append('price', values.price);
     formData.append('quantity', values.quantity);
-
+  
     if (fileList.length > 0) {
       const upload = fileList[0].originFileObj;
-
       if (!upload.type.startsWith('image/')) {
         message.error('Please upload only image files.');
         return;
       }
-
       formData.append('upload', upload);
     }
-
-    axios.post('http://localhost:8000/api/gallery', formData)
-      .then(response => {
-        const newImage = response.data.image;
-        setImages([...images, newImage]);
-        message.success('Image added successfully');
-        setIsModalOpen(false);
-        setFileList([]);
-      })
-      .catch(error => {
-        console.error('There was an error adding the image!', error);
-        message.error('There was an error adding the image!');
-      });
+  
+    if (editingImage) {
+      // Edit existing image
+      axios.put(`http://localhost:8000/api/gallery/${editingImage.id}`, formData)
+        .then(response => {
+          const updatedImage = response.data.gallery;
+          setImages(images.map(image => (image.id === updatedImage.id ? updatedImage : image)));
+          message.success('Image updated successfully');
+          setIsModalOpen(false);
+          setEditingImage(null);
+          setFileList([]);
+        })
+        .catch(error => {
+          console.error('Error details:', error.response?.data || error.message);
+          message.error(`There was an error updating the image: ${error.response?.data?.message || error.message}`);
+        });
+    } else {
+      // Add new image
+      axios.post('http://localhost:8000/api/gallery', formData)
+        .then(response => {
+          const newImage = response.data.gallery;
+          setImages([...images, newImage]);
+          message.success('Image added successfully');
+          setIsModalOpen(false);
+          setFileList([]);
+        })
+        .catch(error => {
+          console.error('Error details:', error.response?.data || error.message);
+          message.error(`There was an error adding the image: ${error.response?.data?.message || error.message}`);
+        });
+    }
   };
+  
 
   const handleOk = () => {
     form.validateFields()
@@ -92,6 +115,7 @@ const GalleryBox = () => {
   const handleCancel = () => {
     setIsModalOpen(false);
     setFileList([]);
+    setEditingImage(null);
   };
 
   const beforeUpload = (file) => {
@@ -146,6 +170,7 @@ const GalleryBox = () => {
       key: 'actions',
       render: (_, record) => (
         <>
+          <Button icon={<EditOutlined />} onClick={() => handleEditImage(record)} style={{ marginLeft: 8 }} />
           <Button icon={<DeleteOutlined />} onClick={() => handleDeleteImage(record.id)} style={{ marginLeft: 8 }} />
         </>
       ),

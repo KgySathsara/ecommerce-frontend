@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Layout, Form, Input, Button, Table, Modal, message, Row, Col, Card, Upload } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, UploadOutlined } from '@ant-design/icons';
 import axios from 'axios';
-import { Buffer } from 'buffer';
+//import { Buffer } from 'buffer';
 import Sidebar from '../../components/Navbar/Sidebar';
 import './ProductManagement.css';
 
@@ -20,7 +20,7 @@ const ProductManagement = () => {
       .then(response => {
         const productsWithImages = response.data.products.map(product => ({
           ...product,
-          image: product.image ? Buffer.from(product.image).toString('base64') : null,
+          image: product.image_url, // Use the image_url directly
         }));
         setProducts(productsWithImages);
       })
@@ -29,6 +29,7 @@ const ProductManagement = () => {
         message.error('There was an error fetching the products!');
       });
   }, []);
+  
 
   const handleAddProduct = () => {
     setEditingProduct(null);
@@ -67,31 +68,26 @@ const ProductManagement = () => {
     formData.append('description', values.description);
     formData.append('price', values.price);
     formData.append('quantity', values.quantity);
-
+  
     if (fileList.length > 0) {
       const upload = fileList[0].originFileObj;
-
-      if (!upload.type.startsWith('image/')) {
-        message.error('Please upload only image files.');
-        return;
-      }
-
       formData.append('upload', upload);
     }
-
+  
     axios.post('http://localhost:8000/api/products', formData)
       .then(response => {
         const newProduct = response.data.product;
         setProducts([...products, newProduct]);
         message.success('Product added successfully');
         setIsModalOpen(false);
-        setFileList([]);
+        setFileList([]); // Clear the file list after upload
       })
       .catch(error => {
         console.error('There was an error adding the product!', error);
         message.error('There was an error adding the product!');
       });
   };
+  
 
   const handleUpdate = (values) => {
     const formData = new FormData();

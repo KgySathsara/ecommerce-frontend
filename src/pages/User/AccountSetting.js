@@ -25,18 +25,20 @@ const AccountSetting = () => {
     const fetchUserData = async () => {
       try {
         const response = await axios.get('http://127.0.0.1:8000/api/user');
-        setUserId(response.data.id); // Assuming response contains the user's ID
+        const { id, name, email } = response.data;
+        setUserId(id); // Store user ID
         form.setFieldsValue({
-          username: response.data.name,
-          email: response.data.email,
+          username: name,
+          email: email,
         });
       } catch (error) {
         message.error('Failed to fetch user data');
       }
     };
-
+  
     fetchUserData();
   }, [form]);
+  
 
   const onFinish = async (values) => {
     if (!userId) {
@@ -47,7 +49,7 @@ const AccountSetting = () => {
     setLoading(true);
     try {
       await axios.put(`http://127.0.0.1:8000/register/${userId}`, {
-        name: values.username,
+        name: values.username, // Use username as the field name
         email: values.email,
         password: values.password,
       });
@@ -83,7 +85,7 @@ const AccountSetting = () => {
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
-                name="username"
+                name="username" // Correct field name
                 label="Username"
                 rules={[{ required: true, message: 'Please input your username!' }]}
                 className="account-form-item"
