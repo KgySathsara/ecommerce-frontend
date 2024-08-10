@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Menu, Avatar, Badge, Space, Dropdown } from 'antd';
 import { CaretDownFilled, UserOutlined, ShoppingCartOutlined, PoweroffOutlined } from '@ant-design/icons';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import logo from '../../assets/logo.png'; 
 import './Navbar.css';
 
@@ -62,7 +62,7 @@ const settings = [
     key: 'account',
   },
   {
-    label: <Link to="/login">Logout</Link>,
+    label: 'Logout',
     key: 'logout',
     icon: <PoweroffOutlined />,
   },
@@ -70,10 +70,20 @@ const settings = [
 
 const Navbar = () => {
   const [current, setCurrent] = useState('1');
-  
+  const navigate = useNavigate(); // Hook to programmatically navigate
   const onClick = (e) => {
     console.log('click ', e);
-    setCurrent(e.key);
+    if (e.key === 'logout') {
+      handleLogout();
+    } else {
+      setCurrent(e.key);
+    }
+  };
+
+  const handleLogout = () => {
+    alert('User Logged Out !!');
+    // Additional logout logic such as clearing user session or redirecting
+    navigate('/'); // Redirect to home or login page
   };
 
   const renderMenuItem = (item) => {
@@ -96,7 +106,7 @@ const Navbar = () => {
   };
 
   const renderSettingsMenu = (
-    <Menu className="usermenu">
+    <Menu className="usermenu" onClick={onClick}>
       {settings.map(setting => (
         <Menu.Item key={setting.key} icon={setting.icon}>
           {setting.label}
