@@ -1,25 +1,41 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from '../../components/Navbar/Navbar';
-import CustomFooter from '../../components/Footer/CustomFooter'
+import CustomFooter from '../../components/Footer/CustomFooter';
 import contactus from '../../assets/bg1.png';
-import gallery1 from '../../assets/gallery1.jpg';
-import gallery2 from '../../assets/gallery2.jpg'; 
-import gallery3 from '../../assets/a.jpg';
-import gallery4 from '../../assets/gallery1.jpg';
-import gallery5 from '../../assets/gallery2.jpg';
-import gallery6 from '../../assets/a.jpg';
 import './user.css';
-import { Card } from 'antd';
+import { Card, Button, InputNumber, Row, Col } from 'antd';
+import { ShoppingCartOutlined } from '@ant-design/icons';
+import axios from 'axios';
 
 const Gallery = () => {
-  const images = [
-    { src: gallery1, alt: 'Gallery 1', label: 'Chicks' },
-    { src: gallery2, alt: 'Gallery 2', label: 'Gallery 2' },
-    { src: gallery3, alt: 'Gallery 3', label: 'Gallery 3' },
-    { src: gallery4, alt: 'Gallery 4', label: 'Gallery 4' },
-    { src: gallery5, alt: 'Gallery 5', label: 'Gallery 5' },
-    { src: gallery6, alt: 'Gallery 6', label: 'Gallery 6' }
-  ];
+  const [galleries, setGalleries] = useState([]);
+  const [quantity, setQuantity] = useState({});
+
+  useEffect(() => {
+    axios.get('http://localhost:8000/api/gallery')
+      .then(response => {
+        setGalleries(response.data.galleries);
+        const initialQuantity = {};
+        response.data.galleries.forEach(gallery => {
+          initialQuantity[gallery.id] = 1;
+        });
+        setQuantity(initialQuantity);
+      })
+      .catch(error => {
+        console.error('Error fetching galleries:', error);
+      });
+  }, []);
+
+  const handleAddToCart = (galleryId) => {
+    console.log(`Added gallery item ${galleryId} with quantity ${quantity[galleryId]} to cart`);
+  };
+
+  const handleQuantityChange = (value, galleryId) => {
+    setQuantity(prevQuantity => ({
+      ...prevQuantity,
+      [galleryId]: value,
+    }));
+  };
 
   return (
     <section>
@@ -34,14 +50,36 @@ const Gallery = () => {
         </div>
       </div>
       <div className="gallery-container">
-        {images.map((image, index) => (
+        {galleries.map((gallery) => (
           <Card
-            key={index}
+            key={gallery.id}
             hoverable
             className="gallery-card"
-            cover={<img alt={image.alt} src={image.src} className="gallery-image" />}
+            cover={<img alt={gallery.name} src={gallery.image_url} className="gallery-image" />}
           >
-            <button className='gallery-button'>{image.label}</button>
+            <h3>{gallery.name}</h3>
+            <p>Available Quantity: {gallery.quantity}</p>
+            <p>Price: ${gallery.price}</p>
+            <Row gutter={16} align="middle" justify="space-between">
+              <Col>
+                <span>Quantity</span> 
+                <InputNumber
+                  min={1}
+                  value={quantity[gallery.id]}
+                  onChange={(value) => handleQuantityChange(value, gallery.id)}
+                  style={{ marginRight: 4, marginLeft: 8 }}
+                />
+              </Col>
+              <Col>
+                <Button
+                  type="primary"
+                  icon={<ShoppingCartOutlined />}
+                  onClick={() => handleAddToCart(gallery.id)}
+                >
+                  Add to Cart
+                </Button>
+              </Col>
+            </Row>
           </Card>
         ))}
       </div>

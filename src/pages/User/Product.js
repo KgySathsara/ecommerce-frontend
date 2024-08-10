@@ -1,16 +1,38 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import Navbar from '../../components/Navbar/Navbar';
 import contactus from '../../assets/bg1.png';
-import product1 from '../../assets/product1.jpg';
-import product2 from '../../assets/product2.jpg';
-import product3 from '../../assets/product3.jpg';
-import product4 from '../../assets/product1.jpg';
 import './user.css';
-import { Card } from 'antd';
+import { Card, Button, Row, Col, InputNumber } from 'antd';
+import { ShoppingCartOutlined } from '@ant-design/icons';
 
 const { Meta } = Card;
 
 const Product = () => {
+  const [products, setProducts] = useState([]);
+  const [quantity, setQuantity] = useState({});
+
+  useEffect(() => {
+    axios.get('http://localhost:8000/api/products')
+      .then((response) => {
+        setProducts(response.data.products);
+      })
+      .catch((error) => {
+        console.error('Error fetching products:', error);
+      });
+  }, []);
+
+  const handleAddToCart = (product) => {
+    console.log(`${product.name} added to cart.`);
+  };
+
+  const handleQuantityChange = (value, product) => {
+    setQuantity(prevQuantity => ({
+      ...prevQuantity,
+      [product]: value,
+    }));
+  };
+
   return (
     <section>
       <Navbar />
@@ -19,40 +41,44 @@ const Product = () => {
         <div className="contactus-overlay">
           <div className="contactus-text">
             <h1>PRODUCT</h1>
-            <h3>View Our Gallery Our Image Album Will Help You To Get An Idea About Our Work</h3>
+            <h3>View Our Gallery. Our Image Album Will Help You To Get An Idea About Our Work</h3>
           </div>
         </div>
       </div>
-      <h1 className='all-product'>All Products</h1>
+      <h1 className="all-product">All Products</h1>
       <div className="product-container">
-        <Card
-          hoverable
-          className="product-card"
-          cover={<img alt="Product 1" src={product1} className="product-image" />}
-        >
-          <Meta title="Product 1" description="Description for product 1" />
-        </Card>
-        <Card
-          hoverable
-          className="product-card"
-          cover={<img alt="Product 2" src={product2} className="product-image" />}
-        >
-          <Meta title="Product 2" description="Description for product 2" />
-        </Card>
-        <Card
-          hoverable
-          className="product-card"
-          cover={<img alt="Product 3" src={product3} className="product-image" />}
-        >
-          <Meta title="Product 3" description="Description for product 3" />
-        </Card>
-        <Card
-          hoverable
-          className="product-card"
-          cover={<img alt="Product 4" src={product4} className="product-image" />}
-        >
-          <Meta title="Product 4" description="Description for product 4" />
-        </Card>
+        {products.map((product) => (
+          <Card
+            key={product.id}
+            hoverable
+            className="product-card"
+            cover={<img alt={product.name} src={product.image_url} className="product-image" />}
+          >
+            <Meta title={product.name} description={product.description} />
+            <p>Quantity: {product.quantity}</p>
+            <p>Price: ${product.price}</p>
+            <Row gutter={16} align="middle" justify="space-between">
+              <Col>
+                <span>Quantity</span>
+                <InputNumber
+                  min={1}
+                  value={quantity[product]}
+                  onChange={(value) => handleQuantityChange(value, product)}
+                  style={{ marginRight: 4, marginLeft: 8 }}
+                />
+              </Col>
+              <Col>
+                <Button
+                  type="primary"
+                  icon={<ShoppingCartOutlined />}
+                  onClick={() => handleAddToCart(product)}
+                >
+                  Add to Cart
+                </Button>
+              </Col>
+            </Row>
+          </Card>
+        ))}
       </div>
     </section>
   );
