@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Layout, Form, Input, Button, Table, Modal, message, Row, Col, Card, Upload } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, UploadOutlined } from '@ant-design/icons';
 import axios from 'axios';
+import { Buffer } from 'buffer';
 import Sidebar from '../../components/Navbar/Sidebar';
 import './ProductManagement.css';
 
@@ -17,7 +18,11 @@ const ProductManagement = () => {
   useEffect(() => {
     axios.get('http://localhost:8000/api/products')
       .then(response => {
-        setProducts(response.data.products);
+        const productsWithImages = response.data.products.map(product => ({
+          ...product,
+          image: product.image ? Buffer.from(product.image).toString('base64') : null,
+        }));
+        setProducts(productsWithImages);
       })
       .catch(error => {
         console.error('There was an error fetching the products!', error);
@@ -37,6 +42,8 @@ const ProductManagement = () => {
     form.setFieldsValue({
       name: product.name,
       description: product.description,
+      price: product.price,
+      quantity: product.quantity,
     });
     setFileList([]);
     setIsModalOpen(true);
@@ -58,6 +65,8 @@ const ProductManagement = () => {
     const formData = new FormData();
     formData.append('name', values.name);
     formData.append('description', values.description);
+    formData.append('price', values.price);
+    formData.append('quantity', values.quantity);
 
     if (fileList.length > 0) {
       const upload = fileList[0].originFileObj;
@@ -88,6 +97,8 @@ const ProductManagement = () => {
     const formData = new FormData();
     formData.append('name', values.name);
     formData.append('description', values.description);
+    formData.append('price', values.price);
+    formData.append('quantity', values.quantity);
 
     if (fileList.length > 0) {
       const upload = fileList[0].originFileObj;
@@ -138,11 +149,7 @@ const ProductManagement = () => {
     if (!isImage) {
       message.error('You can only upload image files (JPEG, PNG, JPG, GIF, SVG)!');
     }
-    const isLt2M = file.size / 1024 / 1024 < 2;
-    if (!isLt2M) {
-      message.error('Image must be smaller than 2MB!');
-    }
-    return isImage && isLt2M;
+    return isImage;
   };
 
   const columns = [
@@ -155,6 +162,39 @@ const ProductManagement = () => {
       title: 'Description',
       dataIndex: 'description',
       key: 'description',
+    },
+    {
+      title: 'Price',
+      dataIndex: 'price',
+      key: 'price',
+    },
+    {
+      title: 'Quantity',
+      dataIndex: 'quantity',
+      key: 'quantity',
+    },
+    {
+      title: 'Image',
+      dataIndex: 'image',
+      key: 'image',
+      render: (image) => {
+        if (!image) {
+          return 'No Image';
+        }
+
+        const isImageUrl = typeof image === 'string' && image.startsWith('http');
+        const imageSrc = isImageUrl
+          ? image
+          : `data:image/png;base64,${image}`;
+
+        return (
+          <img
+            src={imageSrc}
+            alt="Product"
+            style={{ width: '100px', height: '100px', objectFit: 'cover' }}
+          />
+        );
+      },
     },
     {
       title: 'Actions',
@@ -220,6 +260,25 @@ const ProductManagement = () => {
             </Form.Item>
 
             <Form.Item
+              label="Price"
+              name="price"
+              rules={[{ required: true, message: 'Please input the product price!' }]}
+            >
+              <Input
+                type="number"
+                placeholder="Enter product price"
+              />
+            </Form.Item>
+
+            <Form.Item
+              label="Quantity"
+              name="quantity"
+              rules={[{ required: true, message: 'Please input the product quantity!' }]}
+            >
+              <Input type="number" placeholder="Enter product quantity" />
+            </Form.Item>
+
+            <Form.Item
               label="Upload Product Image"
               name="upload"
               valuePropName="fileList"
@@ -227,19 +286,20 @@ const ProductManagement = () => {
                 if (Array.isArray(e)) {
                   return e;
                 }
-                return e?.fileList;
+                return e && e.fileList;
               }}
-              rules={[{ required: true, message: 'Please upload a product image!' }]}
+              rules={[{ required: !editingProduct, message: 'Please upload a product image!' }]}
             >
               <Upload
-                fileList={fileList}
                 beforeUpload={beforeUpload}
+                listType="picture"
+                fileList={fileList}
                 onChange={({ fileList }) => setFileList(fileList)}
+                onRemove={() => setFileList([])}
               >
                 <Button icon={<UploadOutlined />}>Click to Upload</Button>
               </Upload>
             </Form.Item>
-
           </Form>
         </Modal>
       </Layout>
