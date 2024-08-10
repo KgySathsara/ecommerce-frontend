@@ -221,6 +221,7 @@
 .order-container {
   display: flex;
   justify-content: center;
-  margin-top: 20px;
-  width: 600px;
+  align-items: center;
+  height: 70vh; /* Full viewport height */
+  background : #d5e1dc;
 }
