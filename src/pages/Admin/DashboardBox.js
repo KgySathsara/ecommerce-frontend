@@ -43,17 +43,17 @@ const DashboardBox = () => {
   return (
     <Row gutter={16}>
       <Col span={8}>
-        <Card title="Products" bordered={false}>
+        <Card title={<span style={{ color: 'blue' }}>Products</span>} bordered={false}>
           {productCount}
         </Card>
       </Col>
       <Col span={8}>
-        <Card title="Gallery" bordered={false}>
+        <Card title={<span style={{ color: 'green' }}>Gallery</span>} bordered={false}>
           {galleryCount}
         </Card>
       </Col>
       <Col span={8}>
-        <Card title="Messages" bordered={false}>
+        <Card title={<span style={{ color: 'red' }}>Messages</span>} bordered={false}>
           {messageCount}
         </Card>
       </Col>
