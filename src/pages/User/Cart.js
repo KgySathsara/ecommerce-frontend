@@ -1,18 +1,37 @@
 import React, { useContext } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom';
 import { CartContext } from '../../contexts/CartContext';
 import Navbar from '../../components/Navbar/Navbar';
 import contactus from '../../assets/bg1.png';
-import { Card, Button } from 'antd';
+import { Card, Button, message } from 'antd';
+import axios from 'axios';
 import './user.css';
-
 
 const Cart = () => {
   const { cart, removeFromCart } = useContext(CartContext);
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
 
-  const handlePayment = () => {
-    navigate('/Payment'); // Redirect to /Payment
+  const handlePayment = async () => {
+    try {
+      // Send the cart items to the backend
+      for (let item of cart) {
+        const response = await axios.post('http://127.0.0.1:8000/api/orders', {
+          name: item.name,
+          price: item.price,
+          quantity: item.quantity,
+        });
+
+        if (response.status !== 201) {
+          throw new Error('Failed to place the order.');
+        }
+      }
+
+      message.success('Order placed successfully!');
+      navigate('/Payment');
+    } catch (error) {
+      console.error('Error placing order:', error);
+      message.error('Failed to place the order. Please try again.');
+    }
   };
 
   return (
@@ -44,7 +63,7 @@ const Cart = () => {
               <p>Order ID - {item.id}</p>
               <p>Total Price - Rs. {item.price * item.quantity}</p>
               <p>Order Items - {item.name} (Quantity {item.quantity})</p>
-              <Button type="primary" onClick={handlePayment}>Payment</Button>
+              <Button type="primary" onClick={handlePayment}>order conform</Button>
               <Button type="primary" onClick={() => removeFromCart(item.id, item.type)} style={{ marginLeft: '10px' }}>
                 Remove
               </Button>
