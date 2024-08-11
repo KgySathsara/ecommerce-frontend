@@ -27,7 +27,7 @@ const Settings = () => {
 
   const handleSubmit = async (values) => {
     try {
-      const userId = 1; // Replace with the actual user ID
+      const userId = 1; 
       const response = await axios.put(`http://127.0.0.1:8000/api/register/${userId}`, values);
       message.success(response.data.message);
     } catch (error) {

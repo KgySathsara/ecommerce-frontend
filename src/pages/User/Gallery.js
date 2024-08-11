@@ -8,6 +8,8 @@ import { ShoppingCartOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import { CartContext } from '../../contexts/CartContext'; // Adjust the path as necessary
 
+const { Meta } = Card;
+
 const Gallery = () => {
   const [galleries, setGalleries] = useState([]);
   const [quantity, setQuantity] = useState({});
@@ -31,7 +33,7 @@ const Gallery = () => {
   const handleAddToCart = (gallery) => {
     const selectedQuantity = quantity[gallery.id] || 1;
     addToCart(gallery, selectedQuantity);
-    message.success('Item added to cart successfully!');
+    message.success(`${gallery.name} added to cart!`);
   };
 
   const handleQuantityChange = (value, galleryId) => {
@@ -59,9 +61,9 @@ const Gallery = () => {
             key={gallery.id}
             hoverable
             className="gallery-card"
-            cover={<img alt={gallery.name} src={gallery.image} className="gallery-image" />}
+            cover={<img alt={gallery.name} src={gallery.image_url} className="gallery-image" />}
           >
-            <h3>{gallery.name}</h3>
+            <Meta title={gallery.name} description={gallery.description} />
             <p>Available Quantity: {gallery.quantity}</p>
             <p>Price: ${gallery.price}</p>
             <Row gutter={16} align="middle" justify="space-between">

@@ -45,7 +45,7 @@
   
   .cover-photo {
     position: relative;
-    height: 200px; /* Adjust as needed */
+    height: 500px; /* Adjust as needed */
     overflow: hidden;
     margin-bottom: 24px; /* Space between cover photo and content */
   }
