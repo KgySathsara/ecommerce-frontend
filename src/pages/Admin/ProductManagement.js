@@ -20,7 +20,7 @@ const ProductManagement = () => {
       .then(response => {
         const productsWithImages = response.data.products.map(product => ({
           ...product,
-          image: product.image_url, // Use the image_url directly
+          image: product.image_url,
         }));
         setProducts(productsWithImages);
       })
@@ -51,8 +51,9 @@ const ProductManagement = () => {
   };
 
   const handleDeleteProduct = (productId) => {
+    console.log('Deleting product with ID:', productId);
     axios.delete(`http://localhost:8000/api/products/${productId}`)
-      .then(() => {
+    .then(() => {
         setProducts(products.filter(product => product.id !== productId));
         message.success('Product deleted successfully');
       })
@@ -61,6 +62,7 @@ const ProductManagement = () => {
         message.error('There was an error deleting the product!');
       });
   };
+  
 
   const handleSubmit = (values) => {
     const formData = new FormData();
@@ -80,7 +82,7 @@ const ProductManagement = () => {
         setProducts([...products, newProduct]);
         message.success('Product added successfully');
         setIsModalOpen(false);
-        setFileList([]); // Clear the file list after upload
+        setFileList([]); 
       })
       .catch(error => {
         console.error('There was an error adding the product!', error);
