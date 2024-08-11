@@ -1,7 +1,7 @@
 import React from 'react';
 import Navbar from '../../../../components/Navbar/Navbar';
 import AnimalFeed from '../../../../components/Inside/AnimalFeed';
-import './PriscoAnimalFeeds.css'; // Import the CSS file
+import './PriscoAnimalFeeds.css'; 
 
 const PriscoAnimalFeeds = () => {
   return (
@@ -17,12 +17,6 @@ const PriscoAnimalFeeds = () => {
       <div className="AnimalFeed">
         <AnimalFeed />
       </div>
-        <div className="content">
-        <p>
-          At Prisco Animal Feeds, we provide top-quality feed products for your livestock. Our
-          commitment to excellence ensures your animals get the best nutrition available.
-        </p>
-        </div>
     </div>
   );
 };

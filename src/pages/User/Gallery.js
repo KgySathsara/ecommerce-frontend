@@ -59,7 +59,7 @@ const Gallery = () => {
             key={gallery.id}
             hoverable
             className="gallery-card"
-            cover={<img alt={gallery.name} src={gallery.image_url} className="gallery-image" />}
+            cover={<img alt={gallery.name} src={gallery.image} className="gallery-image" />}
           >
             <h3>{gallery.name}</h3>
             <p>Available Quantity: {gallery.quantity}</p>

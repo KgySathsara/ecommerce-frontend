@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Layout, Form, Input, Button, Table, Modal, message, Upload } from 'antd';
-import { PlusOutlined, UploadOutlined,EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { PlusOutlined, UploadOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import './OrderManagement.css';
 
@@ -16,7 +16,11 @@ const GalleryBox = () => {
   useEffect(() => {
     axios.get('http://localhost:8000/api/gallery')
       .then(response => {
-        setImages(response.data.galleries);
+        const imagesWithSrc = response.data.galleries.map(image => ({
+          ...image,
+          image: image.image, // Assuming API returns a base64 string already
+        }));
+        setImages(imagesWithSrc);
       })
       .catch(error => {
         console.error('There was an error fetching the galleries!', error);
@@ -59,25 +63,19 @@ const GalleryBox = () => {
     formData.append('name', values.name);
     formData.append('price', values.price);
     formData.append('quantity', values.quantity);
-  
+
     if (fileList.length > 0) {
       const upload = fileList[0].originFileObj;
-      if (!upload.type.startsWith('image/')) {
-        message.error('Please upload only image files.');
-        return;
-      }
       formData.append('upload', upload);
     }
-  
+
     if (editingImage) {
-      // Edit existing image
       axios.put(`http://localhost:8000/api/gallery/${editingImage.id}`, formData)
         .then(response => {
           const updatedImage = response.data.gallery;
           setImages(images.map(image => (image.id === updatedImage.id ? updatedImage : image)));
           message.success('Image updated successfully');
           setIsModalOpen(false);
-          setEditingImage(null);
           setFileList([]);
         })
         .catch(error => {
@@ -85,7 +83,6 @@ const GalleryBox = () => {
           message.error(`There was an error updating the image: ${error.response?.data?.message || error.message}`);
         });
     } else {
-      // Add new image
       axios.post('http://localhost:8000/api/gallery', formData)
         .then(response => {
           const newImage = response.data.gallery;
@@ -100,7 +97,6 @@ const GalleryBox = () => {
         });
     }
   };
-  
 
   const handleOk = () => {
     form.validateFields()
@@ -152,13 +148,13 @@ const GalleryBox = () => {
         }
 
         const isImageUrl = typeof image === 'string' && image.startsWith('http');
-        const imageSrc = isImageUrl
+        const imgSrc = isImageUrl
           ? image
-          : `data:image/png;base64,${image}`;
+          : image; // image is already a base64 string
 
         return (
           <img
-            src={imageSrc}
+            src={imgSrc} // imgSrc is either a URL or a base64 string
             alt="Gallery"
             style={{ width: '100px', height: '100px', objectFit: 'cover' }}
           />
