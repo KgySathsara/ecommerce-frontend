@@ -1,103 +1,55 @@
-import React from 'react';
-import { Table } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Table, message } from 'antd';
+import axios from 'axios';
 
 const columns = [
   {
-    title: 'Name',
+    title: 'Order Name',
     dataIndex: 'name',
-    showSorterTooltip: {
-      target: 'full-header',
-    },
-    filters: [
-      {
-        text: 'Joe',
-        value: 'Joe',
-      },
-      {
-        text: 'Jim',
-        value: 'Jim',
-      },
-      {
-        text: 'Submenu',
-        value: 'Submenu',
-        children: [
-          {
-            text: 'Green',
-            value: 'Green',
-          },
-          {
-            text: 'Black',
-            value: 'Black',
-          },
-        ],
-      },
-    ],
-    // specify the condition of filtering result
-    // here is that finding the name started with `value`
-    onFilter: (value, record) => record.name.indexOf(value) === 0,
     sorter: (a, b) => a.name.length - b.name.length,
-    sortDirections: ['descend'],
+    sortDirections: ['descend', 'ascend'],
   },
   {
-    title: 'Age',
-    dataIndex: 'age',
-    defaultSortOrder: 'descend',
-    sorter: (a, b) => a.age - b.age,
+    title: 'Price',
+    dataIndex: 'price',
+    sorter: (a, b) => a.price - b.price,
+    sortDirections: ['descend', 'ascend'],
   },
   {
-    title: 'Address',
-    dataIndex: 'address',
-    filters: [
-      {
-        text: 'London',
-        value: 'London',
-      },
-      {
-        text: 'New York',
-        value: 'New York',
-      },
-    ],
-    onFilter: (value, record) => record.address.indexOf(value) === 0,
+    title: 'Quantity',
+    dataIndex: 'quantity',
   },
 ];
-const data = [
-  {
-    key: '1',
-    name: 'John Brown',
-    age: 32,
-    address: 'New York No. 1 Lake Park',
-  },
-  {
-    key: '2',
-    name: 'Jim Green',
-    age: 42,
-    address: 'London No. 1 Lake Park',
-  },
-  {
-    key: '3',
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sydney No. 1 Lake Park',
-  },
-  {
-    key: '4',
-    name: 'Jim Red',
-    age: 32,
-    address: 'London No. 2 Lake Park',
-  },
-];
-const onChange = (pagination, filters, sorter, extra) => {
-  console.log('params', pagination, filters, sorter, extra);
+
+const OrderManagementBox = () => {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const response = await axios.get('http://127.0.0.1:8000/api/orders');
+        setData(response.data);
+      } catch (error) {
+        console.error('Error fetching orders:', error);
+        message.error('Failed to load orders. Please try again later.');
+      }
+    };
+
+    fetchOrders();
+  }, []);
+
+  const onChange = (pagination, filters, sorter, extra) => {
+    console.log('params', pagination, filters, sorter, extra);
+  };
+
+  return (
+    <Table
+      columns={columns}
+      dataSource={data}
+      onChange={onChange}
+      rowKey="id" // Set a unique key for each row
+    />
+  );
 };
 
-const OrderManagementBox = () => (
-  <Table
-    columns={columns}
-    dataSource={data}
-    onChange={onChange}
-    showSorterTooltip={{
-      target: 'sorter-icon',
-    }}
-  />
-);
 export default OrderManagementBox;
