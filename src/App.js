@@ -22,6 +22,7 @@ import PriscoBree from './pages/User/InsidePage/PriscoBree/PriscoBree';
 import PriscoPlantation from './pages/User/InsidePage/PriscoPlantation/PriscoPlantation';
 import PrivateRoute from './components/PrivateRoute'; // Import PrivateRoute
 import './App.css';
+import Payment from './pages/User/Payment';
 
 const App = () => {
   return (
@@ -37,6 +38,7 @@ const App = () => {
         <Route path="/Contactus" element={<Contactus />} />
         <Route path="/AccountSetting" element={<AccountSetting />} />
         <Route path="/Cart" element={<Cart />} />
+        <Route path="/Payment" element={<Payment/>} />
         
         {/* Admin Routes */}
         <Route path="/admin" element={<PrivateRoute component={Dashboard} roles={['admin']} />} />

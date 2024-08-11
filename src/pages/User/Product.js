@@ -1,16 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import Navbar from '../../components/Navbar/Navbar';
 import contactus from '../../assets/bg1.png';
 import './user.css';
-import { Card, Button, Row, Col, InputNumber } from 'antd';
+import { Card, Button, Row, Col, InputNumber, message } from 'antd';
 import { ShoppingCartOutlined } from '@ant-design/icons';
+import { CartContext } from '../../contexts/CartContext'; // Adjust the path as necessary
 
 const { Meta } = Card;
 
 const Product = () => {
   const [products, setProducts] = useState([]);
   const [quantity, setQuantity] = useState({});
+  const { addToCart } = useContext(CartContext);
 
   useEffect(() => {
     axios.get('http://localhost:8000/api/products')
@@ -23,13 +25,15 @@ const Product = () => {
   }, []);
 
   const handleAddToCart = (product) => {
-    console.log(`${product.name} added to cart.`);
+    const currentQuantity = quantity[product.id] || 1;
+    addToCart(product, currentQuantity);
+    message.success(`${product.name} added to cart!`);
   };
 
   const handleQuantityChange = (value, product) => {
     setQuantity(prevQuantity => ({
       ...prevQuantity,
-      [product]: value,
+      [product.id]: value,
     }));
   };
 
@@ -55,14 +59,14 @@ const Product = () => {
             cover={<img alt={product.name} src={product.image_url} className="product-image" />}
           >
             <Meta title={product.name} description={product.description} />
-            <p>Quantity: {product.quantity}</p>
+            <p>Quantity Available: {product.quantity}</p>
             <p>Price: ${product.price}</p>
             <Row gutter={16} align="middle" justify="space-between">
               <Col>
                 <span>Quantity</span>
                 <InputNumber
                   min={1}
-                  value={quantity[product]}
+                  value={quantity[product.id]}
                   onChange={(value) => handleQuantityChange(value, product)}
                   style={{ marginRight: 4, marginLeft: 8 }}
                 />
