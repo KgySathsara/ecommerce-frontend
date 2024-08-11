@@ -1,23 +1,64 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, Col, Row } from 'antd';
+import axios from 'axios';
 
-const DashboardBox = () => (
-  <Row gutter={16}>
-    <Col span={8}>
-      <Card title="Products" bordered={false}>
-        Card content
-      </Card>
-    </Col>
-    <Col span={8}>
-      <Card title="Odres" bordered={false}>
-        Card content
-      </Card>
-    </Col>
-    <Col span={8}>
-      <Card title="Messages" bordered={false}>
-        Card content
-      </Card>
-    </Col>
-  </Row>
-);
+const DashboardBox = () => {
+  const [productCount, setProductCount] = useState(0);
+  const [galleryCount, setGalleryCount] = useState(0);
+  const [messageCount, setMessageCount] = useState(0);
+
+  useEffect(() => {
+    const fetchProductCount = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/api/product-count');
+        setProductCount(response.data.count);
+      } catch (error) {
+        console.error('Error fetching product count:', error);
+      }
+    };
+
+    const fetchGalleryCount = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/api/gallery-count');
+        setGalleryCount(response.data.count);
+      } catch (error) {
+        console.error('Error fetching gallery count:', error);
+      }
+    };
+
+    const fetchMessageCount = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/api/message-count');
+        setMessageCount(response.data.count);
+      } catch (error) {
+        console.error('Error fetching message count:', error);
+      }
+    };
+
+    fetchProductCount();
+    fetchGalleryCount();
+    fetchMessageCount();
+  }, []);
+
+  return (
+    <Row gutter={16}>
+      <Col span={8}>
+        <Card title="Products" bordered={false}>
+          {productCount}
+        </Card>
+      </Col>
+      <Col span={8}>
+        <Card title="Gallery" bordered={false}>
+          {galleryCount}
+        </Card>
+      </Col>
+      <Col span={8}>
+        <Card title="Messages" bordered={false}>
+          {messageCount}
+        </Card>
+      </Col>
+    </Row>
+  );
+};
+
 export default DashboardBox;

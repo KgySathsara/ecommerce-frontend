@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Layout, Form, Input, Button, Table, Modal, message, Row, Col, Card, Upload } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, UploadOutlined } from '@ant-design/icons';
 import axios from 'axios';
-//import { Buffer } from 'buffer';
 import Sidebar from '../../components/Navbar/Sidebar';
 import './ProductManagement.css';
 

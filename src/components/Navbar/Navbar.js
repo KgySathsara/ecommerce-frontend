@@ -70,7 +70,7 @@ const settings = [
 
 const Navbar = () => {
   const [current, setCurrent] = useState('1');
-  const navigate = useNavigate(); // Hook to programmatically navigate
+  const navigate = useNavigate(); 
   const onClick = (e) => {
     console.log('click ', e);
     if (e.key === 'logout') {
@@ -82,8 +82,7 @@ const Navbar = () => {
 
   const handleLogout = () => {
     alert('User Logged Out !!');
-    // Additional logout logic such as clearing user session or redirecting
-    navigate('/'); // Redirect to home or login page
+    navigate('/'); 
   };
 
   const renderMenuItem = (item) => {
