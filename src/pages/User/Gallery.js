@@ -6,7 +6,7 @@ import './user.css';
 import { Card, Button, InputNumber, Row, Col, message } from 'antd';
 import { ShoppingCartOutlined } from '@ant-design/icons';
 import axios from 'axios';
-import { CartContext } from '../../contexts/CartContext'; // Adjust the path as necessary
+import { CartContext } from '../../contexts/CartContext';
 
 const { Meta } = Card;
 
