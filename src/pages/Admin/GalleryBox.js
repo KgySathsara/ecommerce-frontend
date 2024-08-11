@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Layout, Form, Input, Button, Table, Modal, message, Upload } from 'antd';
-import { PlusOutlined, UploadOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { PlusOutlined, UploadOutlined, DeleteOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import './OrderManagement.css';
 
@@ -35,21 +35,10 @@ const GalleryBox = () => {
     setIsModalOpen(true);
   };
 
-  const handleEditImage = (image) => {
-    setEditingImage(image);
-    form.setFieldsValue({
-      name: image.name,
-      price: image.price,
-      quantity: image.quantity,
-    });
-    setFileList([]);
-    setIsModalOpen(true);
-  };
-
   const handleDeleteImage = (imageId) => {
     axios.delete(`http://localhost:8000/api/gallery/${imageId}`)
       .then(() => {
-        setImages(images.filter(image => image.id !== imageId));
+        setImages(prevImages => prevImages.filter(image => image.id !== imageId));
         message.success('Image deleted successfully');
       })
       .catch(error => {
@@ -69,33 +58,26 @@ const GalleryBox = () => {
       formData.append('upload', upload);
     }
 
-    if (editingImage) {
-      axios.put(`http://localhost:8000/api/gallery/${editingImage.id}`, formData)
-        .then(response => {
-          const updatedImage = response.data.gallery;
+    const request = editingImage
+      ? axios.put(`http://localhost:8000/api/gallery/${editingImage.id}`, formData)
+      : axios.post('http://localhost:8000/api/gallery', formData);
+
+    request
+      .then(response => {
+        const updatedImage = response.data.gallery;
+        if (editingImage) {
           setImages(images.map(image => (image.id === updatedImage.id ? updatedImage : image)));
-          message.success('Image updated successfully');
-          setIsModalOpen(false);
-          setFileList([]);
-        })
-        .catch(error => {
-          console.error('Error details:', error.response?.data || error.message);
-          message.error(`There was an error updating the image: ${error.response?.data?.message || error.message}`);
-        });
-    } else {
-      axios.post('http://localhost:8000/api/gallery', formData)
-        .then(response => {
-          const newImage = response.data.gallery;
-          setImages([...images, newImage]);
-          message.success('Image added successfully');
-          setIsModalOpen(false);
-          setFileList([]);
-        })
-        .catch(error => {
-          console.error('Error details:', error.response?.data || error.message);
-          message.error(`There was an error adding the image: ${error.response?.data?.message || error.message}`);
-        });
-    }
+        } else {
+          setImages([...images, updatedImage]);
+        }
+        message.success(`Image ${editingImage ? 'updated' : 'added'} successfully`);
+        setIsModalOpen(false);
+        setFileList([]);
+      })
+      .catch(error => {
+        console.error('Error details:', error.response?.data || error.message);
+        message.error(`There was an error ${editingImage ? 'updating' : 'adding'} the image: ${error.response?.data?.message || error.message}`);
+      });
   };
 
   const handleOk = () => {
@@ -147,14 +129,11 @@ const GalleryBox = () => {
           return 'No Image';
         }
 
-        const isImageUrl = typeof image === 'string' && image.startsWith('http');
-        const imgSrc = isImageUrl
-          ? image
-          : image; // image is already a base64 string
+        const imgSrc = typeof image === 'string' && image.startsWith('data:') ? image : `data:image/jpeg;base64,${image}`; // Ensure image is displayed correctly
 
         return (
           <img
-            src={imgSrc} // imgSrc is either a URL or a base64 string
+            src={imgSrc} // imgSrc is either a base64 string or a URL
             alt="Gallery"
             style={{ width: '100px', height: '100px', objectFit: 'cover' }}
           />
@@ -166,7 +145,6 @@ const GalleryBox = () => {
       key: 'actions',
       render: (_, record) => (
         <>
-          <Button icon={<EditOutlined />} onClick={() => handleEditImage(record)} style={{ marginLeft: 8 }} />
           <Button icon={<DeleteOutlined />} onClick={() => handleDeleteImage(record.id)} style={{ marginLeft: 8 }} />
         </>
       ),
@@ -215,29 +193,28 @@ const GalleryBox = () => {
               name="quantity"
               rules={[{ required: true, message: 'Please input the image quantity!' }]}
             >
-              <Input type="number" placeholder="Enter image quantity" />
+              <Input
+                type="number"
+                placeholder="Enter image quantity"
+              />
             </Form.Item>
 
             <Form.Item
-              label="Upload Image"
+              label="Image"
               name="upload"
               valuePropName="fileList"
-              getValueFromEvent={e => {
-                if (Array.isArray(e)) {
-                  return e;
-                }
-                return e && e.fileList;
-              }}
-              rules={[{ required: !editingImage, message: 'Please upload an image!' }]}
+              getValueFromEvent={({ fileList }) => fileList}
+              extra="Upload an image (JPEG, PNG, JPG, GIF, SVG)"
             >
               <Upload
                 beforeUpload={beforeUpload}
-                listType="picture"
                 fileList={fileList}
                 onChange={({ fileList }) => setFileList(fileList)}
-                onRemove={() => setFileList([])}
+                customRequest={({ file, onSuccess }) => {
+                  setTimeout(() => onSuccess(), 0);
+                }}
               >
-                <Button icon={<UploadOutlined />}>Click to Upload</Button>
+                <Button icon={<UploadOutlined />}>Upload Image</Button>
               </Upload>
             </Form.Item>
           </Form>
