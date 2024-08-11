@@ -1,15 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Navbar from '../../components/Navbar/Navbar';
 import CustomFooter from '../../components/Footer/CustomFooter';
 import contactus from '../../assets/bg1.png';
 import './user.css';
-import { Card, Button, InputNumber, Row, Col } from 'antd';
+import { Card, Button, InputNumber, Row, Col, message } from 'antd';
 import { ShoppingCartOutlined } from '@ant-design/icons';
 import axios from 'axios';
+import { CartContext } from '../../contexts/CartContext'; // Adjust the path as necessary
 
 const Gallery = () => {
   const [galleries, setGalleries] = useState([]);
   const [quantity, setQuantity] = useState({});
+  const { addToCart } = useContext(CartContext);
 
   useEffect(() => {
     axios.get('http://localhost:8000/api/gallery')
@@ -26,8 +28,10 @@ const Gallery = () => {
       });
   }, []);
 
-  const handleAddToCart = (galleryId) => {
-    console.log(`Added gallery item ${galleryId} with quantity ${quantity[galleryId]} to cart`);
+  const handleAddToCart = (gallery) => {
+    const selectedQuantity = quantity[gallery.id] || 1;
+    addToCart(gallery, selectedQuantity);
+    message.success('Item added to cart successfully!');
   };
 
   const handleQuantityChange = (value, galleryId) => {
@@ -74,7 +78,7 @@ const Gallery = () => {
                 <Button
                   type="primary"
                   icon={<ShoppingCartOutlined />}
-                  onClick={() => handleAddToCart(gallery.id)}
+                  onClick={() => handleAddToCart(gallery)}
                 >
                   Add to Cart
                 </Button>
