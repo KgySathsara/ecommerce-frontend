@@ -1,5 +1,5 @@
 import React from 'react';
-import Navitem from '../../../../components/Navbar/NavItem';
+import Navbar from '../../../../components/Navbar/Navbar';
 import contactus from '../../../../assets/Animal-Feed.jpg';
 import image1 from '../../../../assets/pic1.jpg';
 import image2 from '../../../../assets/pic5.jpg';
@@ -9,7 +9,7 @@ import './PriscoAnimalFeeds.css';
 const PriscoAnimalFeeds = () => {
   return (
     <section>
-      <Navitem />
+      <Navbar />
       <div className="contactus-container">
         <img src={contactus} alt="Contactus" className="contactus-image" />
         <div className="contactus-overlay">

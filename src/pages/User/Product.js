@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
-import Navitem from '../../components/Navbar/NavItem';
+import Navbar from '../../components/Navbar/Navbar';
 import contactus from '../../assets/bg1.png';
 import './user.css';
 import { Card, Button, Row, Col, InputNumber, message } from 'antd';
@@ -39,7 +39,7 @@ const Product = () => {
 
   return (
     <section>
-      <Navitem />
+      <Navbar />
       <div className="contactus-container">
         <img src={contactus} alt="Contactus" className="contactus-image" />
         <div className="contactus-overlay">

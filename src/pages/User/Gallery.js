@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import Navitem from '../../components/Navbar/NavItem';
+import Navbar from '../../components/Navbar/Navbar';
 import CustomFooter from '../../components/Footer/CustomFooter';
 import contactus from '../../assets/bg1.png';
 import './user.css';
@@ -45,7 +45,7 @@ const Gallery = () => {
 
   return (
     <section>
-      <Navitem />
+      <Navbar />
       <div className="contactus-container">
         <img src={contactus} alt="Contactus" className="contactus-image" />
         <div className="contactus-overlay">

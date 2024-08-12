@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Form, Input, Col, Row, message } from 'antd';
-import Navitem from '../../components/Navbar/NavItem';
+import Navbar from '../../components/Navbar/Navbar';
 import axios from 'axios';
 import contactus from '../../assets/a.jpg';
 import './Account.css';
@@ -64,7 +64,7 @@ const AccountSetting = () => {
 
   return (
     <>
-      <Navitem />
+      <Navbar />
       <div className="contactus-container">
         <img src={contactus} alt="Contact Us" className="contactus-image" />
         <div className="contactus-overlay">

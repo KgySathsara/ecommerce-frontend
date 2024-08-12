@@ -1,5 +1,5 @@
 import React from 'react';
-import Navitem from '../../components/Navbar/NavItem';
+import Navbar from '../../components/Navbar/Navbar';
 import './about.css';
 import picture from '../../assets/chicken.jpg';
 import CustomFooter from '../../components/Footer/CustomFooter';
@@ -7,7 +7,7 @@ import CustomFooter from '../../components/Footer/CustomFooter';
 const Aboutus = () => {
   return (
     <section>
-      <Navitem />
+      <Navbar />
       <div className="aboutus-container">
         <div className="aboutus-image-container">
           <img alt="Prisco Chicken Product" src={picture} className="aboutus-image" />
