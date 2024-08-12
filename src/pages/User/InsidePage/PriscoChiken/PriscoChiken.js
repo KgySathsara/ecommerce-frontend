@@ -1,15 +1,15 @@
 import React from 'react';
-import Navbar from '../../../../components/Navbar/Navbar';
-import './PriscoChiken.css'; // Import the CSS file
+import Navitem from '../../../../components/Navbar/NavItem';
+import './PriscoChiken.css'; 
 import contactus from '../../../../assets/Chicken-Product.jpg';
-import image1 from '../../../../assets/pic11.jpg'; // Replace with your image path
-import image2 from '../../../../assets/Chicken-Product.jpg'; // Replace with your image path
-import image3 from '../../../../assets/pic12.jpg'; // Replace with your image path
+import image1 from '../../../../assets/pic11.jpg';
+import image2 from '../../../../assets/Chicken-Product.jpg'; 
+import image3 from '../../../../assets/pic12.jpg'; 
 
 const PriscoChiken = () => {
   return (
     <section>
-      <Navbar />
+      <Navitem />
       <div className="contactus-container">
         <img src={contactus} alt="Contactus" className="contactus-image" />
         <div className="contactus-overlay">

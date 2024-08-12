@@ -1,5 +1,5 @@
 import React from 'react';
-import Navbar from '../../components/Navbar/Navbar';
+import Navitem from '../../components/Navbar/NavItem';
 import CustomFooter from '../../components/Footer/CustomFooter';
 import contactus from '../../assets/bg1.png';
 import { message, Form, Input, Button, Divider, Card } from 'antd';
@@ -30,7 +30,7 @@ const Contactus = () => {
 
   return (
     <section>
-      <Navbar />
+      <Navitem />
       <div className="contactus-container">
         <img src={contactus} alt="Contactus" className="contactus-image" />
         <div className="contactus-overlay">

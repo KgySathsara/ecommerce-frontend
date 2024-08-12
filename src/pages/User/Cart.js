@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CartContext } from '../../contexts/CartContext';
-import Navbar from '../../components/Navbar/Navbar';
+import Navitem from '../../components/Navbar/NavItem';
 import contactus from '../../assets/bg1.png';
 import { Card, Button, message } from 'antd';
 import axios from 'axios';
@@ -36,7 +36,7 @@ const Cart = () => {
 
   return (
     <section>
-      <Navbar />
+      <Navitem />
       <div className="contactus-container">
         <img src={contactus} alt="Contact Us" className="contactus-image" />
         <div className="contactus-overlay">
